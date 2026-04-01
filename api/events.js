@@ -82,6 +82,7 @@ export default async function handler(req, res) {
         endTime:      e.endTime   || null,
         locationName: e.location?.locationName || '',
         category:     e.category?.name        || '',
+        _rawCategory: e.category, // DEBUG: remove after verifying field name
         summary:      e.summary               || '',
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,

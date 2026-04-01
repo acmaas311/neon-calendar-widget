@@ -273,6 +273,44 @@
 #nba-calendar .nba-footer { background: #f0f7f2; border-top: 1px solid #d4e8da; padding: 8px 24px !important; display: flex; justify-content: flex-end; margin: 0 !important; }
 #nba-calendar .nba-footer a { font-size: 10px; color: #15522B; text-decoration: none; font-weight: 600; opacity: .65; }
 #nba-calendar .nba-footer a:hover { opacity: 1; }
+
+/* ── High-specificity overrides (beat host CSS via :not(#nba-x) trick) ───── */
+/* Selectors here have specificity (2,0,0)+(class) = (2,1,0), higher than   */
+/* virtually any host selector, even with !important from same specificity.  */
+#nba-calendar:not(#nba-x) * { line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-header { padding: 18px 24px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-title { line-height: 1.1 !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-subtitle { line-height: 1.2 !important; margin-top: 2px !important; margin-bottom: 0 !important; margin-left: 0 !important; margin-right: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-header-right { margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-btn { padding: 7px 14px !important; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-btn-nav { padding: 7px 12px !important; }
+#nba-calendar:not(#nba-x) .nba-month-label { margin: 0 !important; padding: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-view-toggle { margin-left: 6px !important; }
+#nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-filters { padding: 11px 24px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-filter-chip { padding: 5px 13px !important; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-cal-cell { padding: 7px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-cal-dow { padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-event-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-event-chip { padding: 5px 7px 6px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-chip-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-photo-name { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list { padding: 22px 24px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-group { margin-bottom: 22px !important; margin-top: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-date-hdr { padding: 7px 0 !important; margin-bottom: 10px !important; margin-top: 0 !important; line-height: 1.2 !important; }
+#nba-calendar:not(#nba-x) .nba-list-event { padding: 14px !important; margin: 0 0 8px 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-name { line-height: 1.3 !important; margin: 0 0 3px 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-loc  { line-height: 1.2 !important; margin: 0 0 5px 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-tag { padding: 2px 8px !important; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-list-tags { margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-footer { padding: 8px 24px !important; margin: 0 !important; }
     `;
     document.head.appendChild(style);
   }
@@ -683,15 +721,18 @@
 
       let events = data.events || [];
 
-      // Handle Neon pagination (fetch remaining pages if any)
+      // Handle Neon pagination — cap at 3 pages to avoid rate-limiting.
+      // Neon often ignores date filters and returns all events; the client-side
+      // date guard below will trim to the current month anyway.
       const total = data.pagination?.totalResults ?? events.length;
       const size  = data.pagination?.pageSize      ?? 200;
-      const pages = Math.ceil(total / size);
+      const pages = Math.min(Math.ceil(total / size), 3);
       if (pages > 1) {
         const rest = await Promise.all(
           Array.from({ length: pages - 1 }, (_, i) =>
             fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${i+2}`)
-              .then(r => r.json()).then(d => d.events || [])
+              .then(r => r.ok ? r.json() : { events: [] })
+              .then(d => d.events || [])
           )
         );
         events = events.concat(...rest);
@@ -706,9 +747,9 @@
       state.events      = events;
       state.error       = null;
 
-      // DEBUG: log unique category values — check browser console to verify Neon field
-      console.log('[NBA widget] unique categories this month:',
-        [...new Set(events.map(e => e.category))].sort());
+      // DEBUG: log category data — check browser console to verify Neon field
+      console.log('[NBA widget] unique categories:', [...new Set(events.map(e => e.category))].sort());
+      if (events.length > 0) console.log('[NBA widget] first event raw category:', events[0]._rawCategory, '| name:', events[0].name);
 
     } catch (err) {
       state.error  = err.message;
