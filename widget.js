@@ -23,6 +23,20 @@
   const DAYS_LONG  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const MAX_PER_CELL = 3;
 
+  // ── Category configuration ───────────────────────────────────────────────
+  // Maps the filter chip labels shown in the UI to the exact category names
+  // stored in NeonCRM. Events whose category doesn't appear in any of these
+  // arrays are hidden from the widget entirely.
+  const CATEGORY_CONFIG = [
+    { label: 'Festivals',               neonCats: ['Festivals'] },
+    { label: 'Outings & Walks',         neonCats: ['Free and Partner Walks', 'Local Trips'] },
+    { label: 'Members-only Events',     neonCats: ['In-person Members-only Events'] },
+    { label: 'Lectures',                neonCats: ['Lectures'] },
+  ];
+
+  // Flat set of every Neon category name that is allowed to appear
+  const ALLOWED_CATS = new Set(CATEGORY_CONFIG.flatMap(c => c.neonCats));
+
   // ── State ───────────────────────────────────────────────────────────────────
   const now = new Date();
   const state = {
@@ -32,7 +46,7 @@
     events:  [],
     loading: false,
     error:   null,
-    categories:  [],
+    // filters.categories holds active chip *labels* from CATEGORY_CONFIG
     filters: { categories: [], price: [], search: '' },
     _cache:  {},
     _searchTimer: null,
@@ -303,18 +317,41 @@
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
     const { search, categories, price } = state.filters;
+
+    // Build the set of allowed Neon category names based on active chip labels.
+    // If no chips are selected, all ALLOWED_CATS are shown.
+    let activeCats;
+    if (categories.length === 0) {
+      activeCats = ALLOWED_CATS;
+    } else {
+      activeCats = new Set(
+        CATEGORY_CONFIG
+          .filter(c => categories.includes(c.label))
+          .flatMap(c => c.neonCats)
+      );
+    }
+
     return state.events.filter(e => {
+      // 1. Only show events from approved categories
+      if (!ALLOWED_CATS.has(e.category)) return false;
+
+      // 2. Apply active category-chip filter
+      if (!activeCats.has(e.category)) return false;
+
+      // 3. Search
       if (search) {
         const q = search.toLowerCase();
         if (!(e.name || '').toLowerCase().includes(q) &&
             !(e.locationName || '').toLowerCase().includes(q) &&
             !(e.summary || '').toLowerCase().includes(q)) return false;
       }
-      if (categories.length && e.category && !categories.includes(e.category)) return false;
+
+      // 4. Price
       if (price.length === 1) {
         if (price[0] === 'free' && !e.isFree) return false;
         if (price[0] === 'paid' &&  e.isFree) return false;
       }
+
       return true;
     });
   }
@@ -476,19 +513,16 @@
 
   // ── Filter bar builder ───────────────────────────────────────────────────────
   function buildFilters() {
-    const { categories, filters } = state;
-    const catChips = categories.map(cat => {
-      const on = filters.categories.length === 0 || filters.categories.includes(cat);
-      return `<button class="nba-filter-chip${on?' active':''}" data-filter="cat" data-value="${h(cat)}">${h(cat)}</button>`;
+    const { filters } = state;
+
+    // Category chips — always shown from CATEGORY_CONFIG (never dynamic)
+    const catChips = CATEGORY_CONFIG.map(({ label }) => {
+      const on = filters.categories.length === 0 || filters.categories.includes(label);
+      return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="cat" data-value="${h(label)}">${h(label)}</button>`;
     }).join('');
 
     const freeOn = filters.price.length === 0 || filters.price.includes('free');
     const paidOn = filters.price.length === 0 || filters.price.includes('paid');
-
-    const catSection = categories.length ? `
-      <div class="nba-filter-divider"></div>
-      <span class="nba-filter-label">Category</span>
-      <div class="nba-filter-group">${catChips}</div>` : '';
 
     return `
       <div class="nba-filters">
@@ -497,12 +531,14 @@
           <input class="nba-search" id="nba-search-input" type="text"
                  placeholder="Search events&hellip;" value="${h(filters.search)}" autocomplete="off">
         </div>
-        ${catSection}
+        <div class="nba-filter-divider"></div>
+        <span class="nba-filter-label">Category</span>
+        <div class="nba-filter-group">${catChips}</div>
         <div class="nba-filter-divider"></div>
         <span class="nba-filter-label">Price</span>
         <div class="nba-filter-group">
-          <button class="nba-filter-chip${freeOn?' active':''}" data-filter="price" data-value="free">Free</button>
-          <button class="nba-filter-chip${paidOn?' active':''}" data-filter="price" data-value="paid">Paid</button>
+          <button class="nba-filter-chip${freeOn ? ' active' : ''}" data-filter="price" data-value="free">Free</button>
+          <button class="nba-filter-chip${paidOn ? ' active' : ''}" data-filter="price" data-value="paid">Paid</button>
         </div>
       </div>`;
   }
@@ -627,8 +663,7 @@
     const endDate   = `${key}-${lastDay}`;
 
     if (state._cache[key]) {
-      state.events     = state._cache[key];
-      state.categories = extractCats(state.events);
+      state.events = state._cache[key];
       render();
       return;
     }
@@ -665,7 +700,6 @@
 
       state._cache[key] = events;
       state.events      = events;
-      state.categories  = extractCats(events);
       state.error       = null;
 
     } catch (err) {
@@ -675,10 +709,6 @@
       state.loading = false;
       render();
     }
-  }
-
-  function extractCats(events) {
-    return [...new Set(events.map(e => e.category).filter(Boolean))].sort();
   }
 
   // ── Bootstrap ────────────────────────────────────────────────────────────────
