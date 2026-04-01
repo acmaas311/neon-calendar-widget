@@ -627,19 +627,18 @@
     attachListeners();
     enforceMonthStyles();
     setTimeout(enforceMonthStyles, 0);
-    startStyleObserver();
+    setTimeout(enforceMonthStyles, 300);
+    setTimeout(enforceMonthStyles, 1000);
   }
 
-  // ── Force calendar cell layout — MutationObserver re-applies if host undoes ──
-  let _styleObserver = null;
-
+  // ── Force calendar cell layout regardless of host CSS/JS ─────────────────────
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
     q('#nba-calendar .nba-cal-cell').forEach(el => {
       f(el, 'display', 'block');
-      f(el, 'flex-direction', 'column');   // if host forces flex, at least stack vertically
-      f(el, 'justify-content', 'flex-start'); // prevent space-between spreading chips
+      f(el, 'flex-direction', 'column');
+      f(el, 'justify-content', 'flex-start');
       f(el, 'align-items', 'stretch');
       f(el, 'gap', '0');
       f(el, 'padding', '7px');
@@ -647,15 +646,18 @@
     });
     q('#nba-calendar .nba-event-wrap').forEach(el => {
       f(el, 'display', 'block');
+      f(el, 'align-self', 'flex-start'); // prevent stretch if parent is flex
       f(el, 'flex-grow', '0');
       f(el, 'flex-shrink', '0');
       f(el, 'margin', '0 0 3px 0');
       f(el, 'padding', '0');
       f(el, 'min-height', '0');
       f(el, 'height', 'auto');
+      f(el, 'max-height', 'none');
     });
     q('#nba-calendar .nba-event-chip').forEach(el => {
       f(el, 'display', 'block');
+      f(el, 'align-self', 'flex-start');
       f(el, 'padding', '5px 7px 6px');
       f(el, 'margin', '0');
       f(el, 'min-height', '0');
@@ -669,20 +671,6 @@
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
     });
-  }
-
-  function startStyleObserver() {
-    if (_styleObserver) { _styleObserver.disconnect(); _styleObserver = null; }
-    const root = document.getElementById('nba-calendar');
-    if (!root) return;
-    let busy = false;
-    _styleObserver = new MutationObserver(() => {
-      if (busy) return;
-      busy = true;
-      enforceMonthStyles();
-      busy = false;
-    });
-    _styleObserver.observe(root, { subtree: true, attributes: true, attributeFilter: ['style'] });
   }
 
   // ── Attach all event listeners after each render ─────────────────────────────
