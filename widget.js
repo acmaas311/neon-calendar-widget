@@ -289,8 +289,10 @@
 #nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-filters { padding: 11px 24px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-filter-chip { padding: 5px 13px !important; margin: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-cal-cell { padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
-#nba-calendar:not(#nba-x) .nba-cal-dow { padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-cal-cell { display: block !important; padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
+#nba-calendar:not(#nba-x) .nba-cal-body { display: grid !important; }
+#nba-calendar:not(#nba-x) .nba-cal-head { display: grid !important; }
+#nba-calendar:not(#nba-x) .nba-cal-dow { display: block !important; padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-wrap { margin-bottom: 3px !important; margin-top: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { padding: 5px 7px 6px !important; margin: 0 !important; display: block !important; }
@@ -300,10 +302,10 @@
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-name { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list { padding: 22px 24px !important; margin: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-group { margin-bottom: 22px !important; margin-top: 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-date-hdr { padding: 7px 0 !important; margin-bottom: 10px !important; margin-top: 0 !important; line-height: 1.2 !important; }
-#nba-calendar:not(#nba-x) .nba-list-event { padding: 14px !important; margin: 0 0 8px 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list { display: block !important; padding: 16px 24px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-group { display: block !important; margin-bottom: 12px !important; margin-top: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-date-hdr { display: block !important; padding: 5px 0 !important; margin-bottom: 6px !important; margin-top: 0 !important; line-height: 1.2 !important; }
+#nba-calendar:not(#nba-x) .nba-list-event { display: flex !important; padding: 12px !important; margin: 0 0 6px 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
 #nba-calendar:not(#nba-x) .nba-list-name { font-size: 14px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-list-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
