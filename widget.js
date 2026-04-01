@@ -332,11 +332,11 @@
     }
 
     return state.events.filter(e => {
-      // 1. Only show events from approved categories
-      if (!ALLOWED_CATS.has(e.category)) return false;
+      // 1. Only show events from approved categories (uncategorized always pass through)
+      if (e.category && !ALLOWED_CATS.has(e.category)) return false;
 
-      // 2. Apply active category-chip filter
-      if (!activeCats.has(e.category)) return false;
+      // 2. Apply active category-chip filter (uncategorized always pass through)
+      if (e.category && !activeCats.has(e.category)) return false;
 
       // 3. Search
       if (search) {
