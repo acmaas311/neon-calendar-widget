@@ -170,7 +170,7 @@
 /* ── Individual cell ─────────────────────────────────────────────────────── */
 #nba-calendar .nba-cal-cell {
   border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;
-  min-height: 168px; padding: 7px !important; background: #fff; overflow: hidden;
+  min-height: 100px; padding: 7px !important; background: #fff; overflow: hidden;
   vertical-align: top; margin: 0 !important;
 }
 #nba-calendar .nba-cal-cell.other-month { background: #fafafa; }
@@ -189,11 +189,11 @@
 }
 #nba-calendar .nba-event-chip:hover { background: #15522B; }
 #nba-calendar .nba-chip-time  {
-  display: block !important; font-size: 9px !important; font-weight: 700 !important; opacity: .88;
+  display: block !important; font-size: 10px !important; font-weight: 700 !important; opacity: .88;
   letter-spacing: .02em; line-height: 1.2 !important; margin-bottom: 2px !important; margin-top: 0 !important; color: #fff !important; padding: 0 !important;
 }
 #nba-calendar .nba-chip-title {
-  display: block !important; font-size: 10px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
+  display: block !important; font-size: 11px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
   overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding: 0 !important; margin: 0 !important;
 }
 
@@ -258,10 +258,10 @@
 #nba-calendar .nba-list-event:hover { box-shadow: 0 2px 10px rgba(21,82,43,.10); border-color: #1BA249; }
 #nba-calendar .nba-list-event.today-grp { border-left: 3px solid #1BA249; }
 #nba-calendar .nba-list-img  { width: 88px; height: 70px; object-fit: cover; flex-shrink: 0; }
-#nba-calendar .nba-list-body { flex: 1; min-width: 0; margin: 0 !important; padding: 0 !important; }
-#nba-calendar .nba-list-name { font-size: 13px !important; font-weight: 700 !important; color: #15522B !important; margin-bottom: 3px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-list-time { font-size: 11px !important; font-weight: 600 !important; color: #018F99 !important; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
-#nba-calendar .nba-list-loc  { font-size: 11px !important; color: #666 !important; margin-bottom: 5px !important; margin-top: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
+#nba-calendar .nba-list-body { flex: 1; min-width: 0; margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
+#nba-calendar .nba-list-name { font-size: 14px !important; font-weight: 700 !important; color: #15522B !important; margin: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
+#nba-calendar .nba-list-time { font-size: 12px !important; font-weight: 600 !important; color: #018F99 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
+#nba-calendar .nba-list-loc  { font-size: 12px !important; color: #666 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
 #nba-calendar .nba-list-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 #nba-calendar .nba-tag       { display: inline-block; padding: 2px 8px !important; font-size: 9.5px; font-weight: 700; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tag-cat   { background: #f0f7f2; color: #15522B; }
@@ -289,13 +289,13 @@
 #nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-filters { padding: 11px 24px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-filter-chip { padding: 5px 13px !important; margin: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-cal-cell { padding: 7px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-cal-cell { padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
 #nba-calendar:not(#nba-x) .nba-cal-dow { padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-wrap { margin-bottom: 3px !important; margin-top: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { padding: 5px 7px 6px !important; margin: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-chip-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
@@ -304,10 +304,10 @@
 #nba-calendar:not(#nba-x) .nba-list-group { margin-bottom: 22px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-date-hdr { padding: 7px 0 !important; margin-bottom: 10px !important; margin-top: 0 !important; line-height: 1.2 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { padding: 14px !important; margin: 0 0 8px 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-list-name { line-height: 1.3 !important; margin: 0 0 3px 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-list-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-list-loc  { line-height: 1.2 !important; margin: 0 0 5px 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
+#nba-calendar:not(#nba-x) .nba-list-name { font-size: 14px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-loc  { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-tag { padding: 2px 8px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-list-tags { margin: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-footer { padding: 8px 24px !important; margin: 0 !important; }
