@@ -65,8 +65,9 @@
     style.id    = 'nba-widget-css';
     style.textContent = `
 /* ── Scoped reset ─────────────────────────────────────────────────────────── */
-#nba-calendar, #nba-calendar * { box-sizing: border-box !important; }
+#nba-calendar, #nba-calendar * { box-sizing: border-box !important; line-height: normal !important; }
 #nba-calendar a, #nba-calendar button { font-family: 'Montserrat', sans-serif !important; }
+#nba-calendar div, #nba-calendar span, #nba-calendar p { margin: 0 !important; padding: 0 !important; }
 
 #nba-calendar {
   font-family: 'Montserrat', sans-serif;
@@ -79,12 +80,12 @@
 /* ── Header ─────────────────────────────────────────────────────────────── */
 #nba-calendar .nba-header {
   background: #15522B; color: #fff;
-  padding: 18px 24px;
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
-  margin: 0;
+  padding: 18px 24px !important;
+  display: flex !important; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  margin: 0 !important;
 }
-#nba-calendar .nba-title    { font-size: 17px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; line-height: 1.1; color: #fff; }
-#nba-calendar .nba-subtitle { font-size: 10px; font-weight: 400; opacity: .75; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; color: #fff; }
+#nba-calendar .nba-title    { font-size: 17px !important; font-weight: 700 !important; letter-spacing: .03em; text-transform: uppercase; line-height: 1.1 !important; color: #fff !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar .nba-subtitle { font-size: 10px !important; font-weight: 400 !important; opacity: .75; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px !important; margin-bottom: 0 !important; padding: 0 !important; color: #fff !important; line-height: 1.2 !important; }
 #nba-calendar .nba-header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 /* ── Header buttons ─────────────────────────────────────────────────────── */
@@ -189,12 +190,12 @@
 }
 #nba-calendar .nba-event-chip:hover { background: #15522B; }
 #nba-calendar .nba-chip-time  {
-  display: block; font-size: 9px; font-weight: 700; opacity: .88;
-  letter-spacing: .02em; line-height: 1.2; margin-bottom: 2px; color: #fff;
+  display: block !important; font-size: 9px !important; font-weight: 700 !important; opacity: .88;
+  letter-spacing: .02em; line-height: 1.2 !important; margin-bottom: 2px !important; margin-top: 0 !important; color: #fff !important; padding: 0 !important;
 }
 #nba-calendar .nba-chip-title {
-  display: block; font-size: 10px; font-weight: 600; line-height: 1.3; color: #fff;
-  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  display: block !important; font-size: 10px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
+  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding: 0 !important; margin: 0 !important;
 }
 
 /* ── Photo event card ────────────────────────────────────────────────────── */
@@ -207,10 +208,10 @@
 #nba-calendar .nba-photo-wrap a { display: block; text-decoration: none !important; }
 #nba-calendar .nba-photo-img  { width: 100%; height: 52px; object-fit: cover; display: block; }
 #nba-calendar .nba-photo-info { padding: 5px 7px 6px; background: #fff; }
-#nba-calendar .nba-photo-time { display: block; font-size: 9px; font-weight: 700; color: #15522B; line-height: 1.2; margin-bottom: 2px; }
+#nba-calendar .nba-photo-time { display: block !important; font-size: 9px !important; font-weight: 700 !important; color: #15522B !important; line-height: 1.2 !important; margin-bottom: 2px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-photo-name {
-  display: block; font-size: 10px; font-weight: 600; color: #222; line-height: 1.3;
-  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  display: block !important; font-size: 10px !important; font-weight: 600 !important; color: #222 !important; line-height: 1.3 !important;
+  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding: 0 !important; margin: 0 !important;
 }
 
 /* ── "+ N more" button ───────────────────────────────────────────────────── */
@@ -259,9 +260,9 @@
 #nba-calendar .nba-list-event.today-grp { border-left: 3px solid #1BA249; }
 #nba-calendar .nba-list-img  { width: 88px; height: 70px; object-fit: cover; flex-shrink: 0; }
 #nba-calendar .nba-list-body { flex: 1; min-width: 0; }
-#nba-calendar .nba-list-name { font-size: 13px; font-weight: 700; color: #15522B; margin-bottom: 3px; line-height: 1.3; }
-#nba-calendar .nba-list-time { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 2px; }
-#nba-calendar .nba-list-loc  { font-size: 11px; color: #666; margin-bottom: 5px; }
+#nba-calendar .nba-list-name { font-size: 13px !important; font-weight: 700 !important; color: #15522B !important; margin-bottom: 3px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
+#nba-calendar .nba-list-time { font-size: 11px !important; font-weight: 600 !important; color: #018F99 !important; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
+#nba-calendar .nba-list-loc  { font-size: 11px !important; color: #666 !important; margin-bottom: 5px !important; margin-top: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
 #nba-calendar .nba-list-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 #nba-calendar .nba-tag       { display: inline-block; padding: 2px 8px; font-size: 9.5px; font-weight: 700; }
 #nba-calendar .nba-tag-cat   { background: #f0f7f2; color: #15522B; }
