@@ -171,8 +171,8 @@
 #nba-calendar .nba-cal-cell {
   border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;
   min-height: 100px; padding: 7px !important; background: #fff; overflow: hidden;
-  display: flex !important; flex-direction: column !important; gap: 3px !important;
-  justify-content: flex-start !important; align-items: stretch !important;
+  display: grid !important; grid-template-columns: 1fr !important;
+  align-content: start !important; row-gap: 3px !important;
   vertical-align: top; margin: 0 !important;
 }
 #nba-calendar .nba-cal-cell.other-month { background: #fafafa; }
@@ -292,7 +292,7 @@
 #nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-filters { padding: 11px 24px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-filter-chip { padding: 5px 13px !important; margin: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-cal-cell { display: flex !important; flex-direction: column !important; gap: 3px !important; justify-content: flex-start !important; align-items: stretch !important; padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
+#nba-calendar:not(#nba-x) .nba-cal-cell { display: grid !important; grid-template-columns: 1fr !important; align-content: start !important; row-gap: 3px !important; padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
 #nba-calendar:not(#nba-x) .nba-cal-body { display: grid !important; }
 #nba-calendar:not(#nba-x) .nba-cal-head { display: grid !important; }
 #nba-calendar:not(#nba-x) .nba-cal-dow { display: block !important; padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
@@ -493,7 +493,7 @@
         : '';
 
       return `
-        <div class="nba-cal-cell${todayCls}" style="display:flex!important;flex-direction:column!important;gap:3px!important;justify-content:flex-start!important;align-items:stretch!important;padding:7px!important">
+        <div class="nba-cal-cell${todayCls}" style="display:grid!important;grid-template-columns:1fr!important;align-content:start!important;row-gap:3px!important;padding:7px!important">
           <div class="nba-day-num" style="margin:0 0 4px 0!important;padding:0!important;line-height:1!important">${cell.day}</div>
           ${eventsHTML}${moreHTML}
         </div>`;
@@ -638,13 +638,12 @@
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
-    // Cell: flex column so gap controls spacing between chips
+    // Cell: grid so align-content:start stacks chips tightly (same fix as list-body)
     q('#nba-calendar .nba-cal-cell').forEach(el => {
-      f(el, 'display', 'flex');
-      f(el, 'flex-direction', 'column');
-      f(el, 'gap', '3px');
-      f(el, 'justify-content', 'flex-start');
-      f(el, 'align-items', 'stretch');
+      f(el, 'display', 'grid');
+      f(el, 'grid-template-columns', '1fr');
+      f(el, 'align-content', 'start');
+      f(el, 'row-gap', '3px');
       f(el, 'padding', '7px');
       f(el, 'min-height', '0');
     });
