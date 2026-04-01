@@ -1,0 +1,9 @@
+{
+  "name": "neon-calendar-widget",
+  "version": "1.0.0",
+  "description": "Embeddable NeonCRM event calendar widget for NYC Bird Alliance",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

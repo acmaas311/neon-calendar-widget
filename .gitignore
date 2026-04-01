@@ -1,0 +1,6 @@
+.claude/
+*.pdf
+mockup.html
+node_modules/
+.env
+.env.local
