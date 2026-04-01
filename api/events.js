@@ -81,8 +81,8 @@ export default async function handler(req, res) {
         endDate:      e.endDate,
         endTime:      e.endTime   || null,
         locationName: e.location?.locationName || '',
-        category:     e.category?.name        || '',
-        _rawCategory: e.category, // DEBUG: remove after verifying field name
+        // Neon returns category as an array of strings e.g. ["Festivals"]
+        category:     (Array.isArray(e.category) ? e.category[0] : e.category?.name) || '',
         summary:      e.summary               || '',
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,

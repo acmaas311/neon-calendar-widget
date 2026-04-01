@@ -292,10 +292,10 @@
 #nba-calendar:not(#nba-x) .nba-cal-cell { padding: 7px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-cal-dow { padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-event-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-event-chip { padding: 5px 7px 6px !important; margin: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-chip-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-event-wrap { margin-bottom: 3px !important; margin-top: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-event-chip { padding: 5px 7px 6px !important; margin: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-chip-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
@@ -304,10 +304,10 @@
 #nba-calendar:not(#nba-x) .nba-list-group { margin-bottom: 22px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-date-hdr { padding: 7px 0 !important; margin-bottom: 10px !important; margin-top: 0 !important; line-height: 1.2 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { padding: 14px !important; margin: 0 0 8px 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-name { line-height: 1.3 !important; margin: 0 0 3px 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-loc  { line-height: 1.2 !important; margin: 0 0 5px 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-name { line-height: 1.3 !important; margin: 0 0 3px 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-loc  { line-height: 1.2 !important; margin: 0 0 5px 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-tag { padding: 2px 8px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-list-tags { margin: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-footer { padding: 8px 24px !important; margin: 0 !important; }
@@ -744,9 +744,6 @@
       state.events      = events;
       state.error       = null;
 
-      // DEBUG: log category data — check browser console to verify Neon field
-      console.log('[NBA widget] unique categories:', [...new Set(events.map(e => e.category))].sort());
-      if (events.length > 0) console.log('[NBA widget] first event raw category:', events[0]._rawCategory, '| name:', events[0].name);
 
     } catch (err) {
       state.error  = err.message;
