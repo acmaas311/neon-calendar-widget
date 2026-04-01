@@ -721,21 +721,18 @@
 
       let events = data.events || [];
 
-      // Handle Neon pagination — cap at 3 pages to avoid rate-limiting.
-      // Neon often ignores date filters and returns all events; the client-side
-      // date guard below will trim to the current month anyway.
+      // Handle Neon pagination sequentially to avoid rate-limiting.
+      // Neon ignores date filters and returns all events sorted oldest-first,
+      // so current-month events can be on the last page. Fetch sequentially
+      // (not in parallel) to stay under Neon's rate limit; stop on any error.
       const total = data.pagination?.totalResults ?? events.length;
       const size  = data.pagination?.pageSize      ?? 200;
-      const pages = Math.min(Math.ceil(total / size), 3);
-      if (pages > 1) {
-        const rest = await Promise.all(
-          Array.from({ length: pages - 1 }, (_, i) =>
-            fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${i+2}`)
-              .then(r => r.ok ? r.json() : { events: [] })
-              .then(d => d.events || [])
-          )
-        );
-        events = events.concat(...rest);
+      const maxPages = Math.ceil(total / size);
+      for (let pg = 2; pg <= maxPages; pg++) {
+        const pr = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${pg}`);
+        if (!pr.ok) break; // stop gracefully on 429 or other error
+        const pd = await pr.json();
+        events = events.concat(pd.events || []);
       }
 
       // ── Client-side date guard ─────────────────────────────────────────────
