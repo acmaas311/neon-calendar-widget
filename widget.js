@@ -476,10 +476,10 @@
         }
 
         return `
-          <div class="nba-event-wrap">
-            <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip">
-              <span class="nba-chip-time">${h(timeStr)}</span>
-              <span class="nba-chip-title">${h(e.name)}</span>
+          <div class="nba-event-wrap" style="display:block!important;margin:0 0 3px 0!important;padding:0!important">
+            <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:block!important;padding:5px 7px 6px!important;margin:0!important">
+              <span class="nba-chip-time" style="display:block!important;margin:0 0 2px 0!important;padding:0!important;line-height:1.2!important;font-size:10px!important">${h(timeStr)}</span>
+              <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important">${h(e.name)}</span>
             </a>
             ${ttHTML(e, flip)}
           </div>`;
@@ -490,8 +490,8 @@
         : '';
 
       return `
-        <div class="nba-cal-cell${todayCls}">
-          <div class="nba-day-num">${cell.day}</div>
+        <div class="nba-cal-cell${todayCls}" style="display:block!important;padding:7px!important">
+          <div class="nba-day-num" style="margin:0 0 4px 0!important;padding:0!important;line-height:1!important">${cell.day}</div>
           ${eventsHTML}${moreHTML}
         </div>`;
     }).join('');
@@ -535,13 +535,13 @@
 
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener"
-             class="nba-list-event${isT?' today-grp':''}">
+             class="nba-list-event${isT?' today-grp':''}" style="display:flex!important;padding:12px!important;margin:0 0 6px 0!important">
             ${img}
-            <div class="nba-list-body">
-              <div class="nba-list-name">${h(e.name)}</div>
-              <div class="nba-list-time">${h(time)}</div>
+            <div class="nba-list-body" style="display:grid!important;row-gap:3px!important;align-content:start!important;margin:0!important;padding:0!important;flex:1;min-width:0">
+              <div class="nba-list-name" style="margin:0!important;padding:0!important;line-height:1.3!important">${h(e.name)}</div>
+              <div class="nba-list-time" style="margin:0!important;padding:0!important;line-height:1.2!important">${h(time)}</div>
               ${loc}
-              <div class="nba-list-tags">${cat}${prc}</div>
+              <div class="nba-list-tags" style="margin:0!important;padding:0!important">${cat}${prc}</div>
             </div>
           </a>`;
       }).join('');
