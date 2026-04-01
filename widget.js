@@ -625,33 +625,64 @@
       <div class="nba-footer"><a href="https://nycbirdalliance.org" target="_blank" rel="noopener">nycbirdalliance.org</a></div>`;
 
     attachListeners();
-    // Re-enforce critical layout styles after host JS may have overridden them.
-    // setProperty with 'important' beats all external CSS and HTML style attrs.
     enforceMonthStyles();
     setTimeout(enforceMonthStyles, 0);
-    setTimeout(enforceMonthStyles, 150);
+    startStyleObserver();
   }
 
-  // ── Force calendar cell layout regardless of host JS/CSS ─────────────────────
+  // ── Force calendar cell layout — MutationObserver re-applies if host undoes ──
+  let _styleObserver = null;
+
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
     q('#nba-calendar .nba-cal-cell').forEach(el => {
-      f(el, 'display', 'block'); f(el, 'padding', '7px');
+      f(el, 'display', 'block');
+      f(el, 'flex-direction', 'column');   // if host forces flex, at least stack vertically
+      f(el, 'justify-content', 'flex-start'); // prevent space-between spreading chips
+      f(el, 'align-items', 'stretch');
+      f(el, 'gap', '0');
+      f(el, 'padding', '7px');
+      f(el, 'min-height', '0');
     });
     q('#nba-calendar .nba-event-wrap').forEach(el => {
-      f(el, 'display', 'block'); f(el, 'margin', '0 0 3px 0'); f(el, 'padding', '0');
+      f(el, 'display', 'block');
+      f(el, 'flex-grow', '0');
+      f(el, 'flex-shrink', '0');
+      f(el, 'margin', '0 0 3px 0');
+      f(el, 'padding', '0');
+      f(el, 'min-height', '0');
+      f(el, 'height', 'auto');
     });
     q('#nba-calendar .nba-event-chip').forEach(el => {
-      f(el, 'display', 'block'); f(el, 'padding', '5px 7px 6px'); f(el, 'margin', '0');
+      f(el, 'display', 'block');
+      f(el, 'padding', '5px 7px 6px');
+      f(el, 'margin', '0');
+      f(el, 'min-height', '0');
+      f(el, 'height', 'auto');
     });
     q('#nba-calendar .nba-chip-time').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0 0 2px 0');
-      f(el, 'padding', '0'); f(el, 'line-height', '1.2');
+      f(el, 'padding', '0'); f(el, 'line-height', '1.2'); f(el, 'min-height', '0');
     });
     q('#nba-calendar .nba-chip-title').forEach(el => {
-      f(el, 'display', 'block'); f(el, 'margin', '0'); f(el, 'padding', '0'); f(el, 'line-height', '1.3');
+      f(el, 'display', 'block'); f(el, 'margin', '0');
+      f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
     });
+  }
+
+  function startStyleObserver() {
+    if (_styleObserver) { _styleObserver.disconnect(); _styleObserver = null; }
+    const root = document.getElementById('nba-calendar');
+    if (!root) return;
+    let busy = false;
+    _styleObserver = new MutationObserver(() => {
+      if (busy) return;
+      busy = true;
+      enforceMonthStyles();
+      busy = false;
+    });
+    _styleObserver.observe(root, { subtree: true, attributes: true, attributeFilter: ['style'] });
   }
 
   // ── Attach all event listeners after each render ─────────────────────────────
