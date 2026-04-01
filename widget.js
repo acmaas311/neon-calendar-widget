@@ -335,8 +335,12 @@
       // 1. Only show events from approved categories (uncategorized always pass through)
       if (e.category && !ALLOWED_CATS.has(e.category)) return false;
 
-      // 2. Apply active category-chip filter (uncategorized always pass through)
-      if (e.category && !activeCats.has(e.category)) return false;
+      // 2. Apply active category-chip filter.
+      // When chips are selected, uncategorized events are also hidden.
+      // When no chips are selected, uncategorized events pass through.
+      if (categories.length > 0) {
+        if (!e.category || !activeCats.has(e.category)) return false;
+      }
 
       // 3. Search
       if (search) {
