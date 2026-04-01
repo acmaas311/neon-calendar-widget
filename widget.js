@@ -625,6 +625,33 @@
       <div class="nba-footer"><a href="https://nycbirdalliance.org" target="_blank" rel="noopener">nycbirdalliance.org</a></div>`;
 
     attachListeners();
+    // Re-enforce critical layout styles after host JS may have overridden them.
+    // setProperty with 'important' beats all external CSS and HTML style attrs.
+    enforceMonthStyles();
+    setTimeout(enforceMonthStyles, 0);
+    setTimeout(enforceMonthStyles, 150);
+  }
+
+  // ── Force calendar cell layout regardless of host JS/CSS ─────────────────────
+  function enforceMonthStyles() {
+    const q = s => document.querySelectorAll(s);
+    const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
+    q('#nba-calendar .nba-cal-cell').forEach(el => {
+      f(el, 'display', 'block'); f(el, 'padding', '7px');
+    });
+    q('#nba-calendar .nba-event-wrap').forEach(el => {
+      f(el, 'display', 'block'); f(el, 'margin', '0 0 3px 0'); f(el, 'padding', '0');
+    });
+    q('#nba-calendar .nba-event-chip').forEach(el => {
+      f(el, 'display', 'block'); f(el, 'padding', '5px 7px 6px'); f(el, 'margin', '0');
+    });
+    q('#nba-calendar .nba-chip-time').forEach(el => {
+      f(el, 'display', 'block'); f(el, 'margin', '0 0 2px 0');
+      f(el, 'padding', '0'); f(el, 'line-height', '1.2');
+    });
+    q('#nba-calendar .nba-chip-title').forEach(el => {
+      f(el, 'display', 'block'); f(el, 'margin', '0'); f(el, 'padding', '0'); f(el, 'line-height', '1.3');
+    });
   }
 
   // ── Attach all event listeners after each render ─────────────────────────────
