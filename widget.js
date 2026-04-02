@@ -47,7 +47,7 @@
     loading: false,
     error:   null,
     // filters.categories holds active chip *labels* from CATEGORY_CONFIG
-    filters: { categories: [], price: [], search: '' },
+    filters: { categories: [], price: [], search: '', regOpen: false },
     _cache:  {},
     _searchTimer: null,
   };
@@ -79,8 +79,8 @@
 /* ── Header ─────────────────────────────────────────────────────────────── */
 #nba-calendar .nba-header {
   background: #15522B; color: #fff;
-  padding: 18px 24px !important;
-  display: flex !important; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  padding: 10px 24px !important;
+  display: flex !important; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   margin: 0 !important;
 }
 #nba-calendar .nba-title    { font-size: 17px !important; font-weight: 700 !important; letter-spacing: .03em; text-transform: uppercase; line-height: 1.1 !important; color: #fff !important; margin: 0 !important; padding: 0 !important; }
@@ -170,7 +170,7 @@
 /* ── Individual cell ─────────────────────────────────────────────────────── */
 #nba-calendar .nba-cal-cell {
   border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;
-  min-height: 100px; padding: 7px !important; background: #fff; overflow: hidden;
+  min-height: 100px; padding: 7px !important; background: #fff; overflow: visible;
   display: grid !important; grid-template-columns: 1fr !important;
   align-content: start !important; row-gap: 3px !important;
   vertical-align: top; margin: 0 !important;
@@ -283,7 +283,7 @@
 /* Selectors here have specificity (2,0,0)+(class) = (2,1,0), higher than   */
 /* virtually any host selector, even with !important from same specificity.  */
 #nba-calendar:not(#nba-x) * { line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-header { padding: 18px 24px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-header { padding: 10px 24px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-title { line-height: 1.1 !important; margin: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-subtitle { line-height: 1.2 !important; margin-top: 2px !important; margin-bottom: 0 !important; margin-left: 0 !important; margin-right: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-header-right { margin: 0 !important; padding: 0 !important; }
@@ -360,7 +360,7 @@
 
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
-    const { search, categories, price } = state.filters;
+    const { search, categories, price, regOpen } = state.filters;
 
     // Build the set of allowed Neon category names based on active chip labels.
     // If no chips are selected, all ALLOWED_CATS are shown.
@@ -400,12 +400,18 @@
         if (price[0] === 'paid' &&  e.isFree) return false;
       }
 
+      // 5. Registration open (hide full events)
+      if (regOpen && e.isFull) return false;
+
       return true;
     });
   }
 
   // ── Tooltip HTML ─────────────────────────────────────────────────────────────
   function ttHTML(e, flip) {
+    const photo = e.imageUrl
+      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:90px;object-fit:cover;display:block;margin:0 0 8px 0!important">`
+      : '';
     const loc  = e.locationName ? `<div class="nba-tt-location">&#128205; ${h(e.locationName)}</div>` : '';
     const desc = e.summary      ? `<div class="nba-tt-desc">${h(e.summary)}</div>` : '';
     const cat  = e.category     ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
@@ -413,6 +419,7 @@
       ? `<span class="nba-tt-tag">Free</span>`
       : `<span class="nba-tt-tag paid">Paid</span>`;
     return `<div class="nba-tooltip${flip?' flip':''}">
+      ${photo}
       <div class="nba-tt-title">${h(e.name)}</div>
       <div class="nba-tt-time">${fmtRange(e.startTime, e.endTime)}</div>
       ${loc}${desc}<div>${cat}${price}</div>
@@ -567,8 +574,9 @@
       return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="cat" data-value="${h(label)}">${h(label)}</button>`;
     }).join('');
 
-    const freeOn = filters.price.length === 0 || filters.price.includes('free');
-    const paidOn = filters.price.length === 0 || filters.price.includes('paid');
+    const freeOn   = filters.price.length === 0 || filters.price.includes('free');
+    const paidOn   = filters.price.length === 0 || filters.price.includes('paid');
+    const regOpenOn = !filters.regOpen;
 
     return `
       <div class="nba-filters">
@@ -585,6 +593,10 @@
         <div class="nba-filter-group">
           <button class="nba-filter-chip${freeOn ? ' active' : ''}" data-filter="price" data-value="free">Free</button>
           <button class="nba-filter-chip${paidOn ? ' active' : ''}" data-filter="price" data-value="paid">Paid</button>
+        </div>
+        <div class="nba-filter-divider"></div>
+        <div class="nba-filter-group">
+          <button class="nba-filter-chip${regOpenOn ? ' active' : ''}" data-filter="regopen" data-value="1">Registration Open</button>
         </div>
       </div>`;
   }
@@ -706,9 +718,13 @@
     el.querySelectorAll('.nba-filter-chip[data-filter]').forEach(b =>
       b.addEventListener('click', () => {
         const { filter, value } = b.dataset;
-        const arr = filter === 'cat' ? state.filters.categories : state.filters.price;
-        const i   = arr.indexOf(value);
-        i === -1 ? arr.push(value) : arr.splice(i, 1);
+        if (filter === 'regopen') {
+          state.filters.regOpen = !state.filters.regOpen;
+        } else {
+          const arr = filter === 'cat' ? state.filters.categories : state.filters.price;
+          const i   = arr.indexOf(value);
+          i === -1 ? arr.push(value) : arr.splice(i, 1);
+        }
         render();
       })
     );

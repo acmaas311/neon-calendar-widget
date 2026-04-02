@@ -73,6 +73,14 @@ export default async function handler(req, res) {
       const sessions = e.registrationInfo?.registrationSessions ?? [];
       const isFree   = sessions.length === 0 || sessions.every(s => !s.fee || s.fee === 0);
 
+      // Registration capacity — Neon provides maximumAttendees and
+      // registrationInfo.registrationCount (current registered count)
+      const maxAttendees  = e.maximumAttendees ?? e.capacity ?? null;
+      const regCount      = e.registrationInfo?.registrationCount
+                         ?? e.registrationInfo?.totalRegistrations
+                         ?? null;
+      const isFull = maxAttendees > 0 && regCount !== null && regCount >= maxAttendees;
+
       return {
         id:           e.id,
         name:         e.name || 'Untitled Event',
@@ -86,6 +94,7 @@ export default async function handler(req, res) {
         summary:      e.summary               || '',
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,
+        isFull,
         // Deep link to the NeonCRM public event page
         url: `https://${orgId}.app.neoncrm.com/np/clients/${orgId}/event.jsp?event=${e.id}`,
       };
