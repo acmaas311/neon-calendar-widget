@@ -47,7 +47,8 @@
     loading: false,
     error:   null,
     // filters.categories holds active chip *labels* from CATEGORY_CONFIG
-    filters: { categories: [], price: [], search: '', regOpen: false },
+    filters: { categories: [], price: [], search: '' },
+    _autoList: false,
     _cache:  {},
     _searchTimer: null,
   };
@@ -202,12 +203,6 @@
   display: block !important; font-size: 11px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
   overflow: hidden !important; max-height: calc(1.3em * 4) !important; padding: 0 !important; margin: 0 !important;
 }
-#nba-calendar .nba-chip-loc {
-  display: block !important; font-size: 9px !important; color: #fff !important; opacity: .78;
-  line-height: 1.2 !important; margin: 0 !important; padding: 0 !important;
-  white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;
-}
-
 /* ── Photo event card ────────────────────────────────────────────────────── */
 #nba-calendar .nba-photo-wrap {
   position: relative; margin-bottom: 3px !important; margin-top: 0 !important;
@@ -223,8 +218,6 @@
   display: block !important; font-size: 10px !important; font-weight: 600 !important; color: #222 !important; line-height: 1.3 !important;
   overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding: 0 !important; margin: 0 !important;
 }
-#nba-calendar .nba-photo-loc { display: block !important; font-size: 9px !important; color: #555 !important; line-height: 1.2 !important; margin: 1px 0 0 0 !important; padding: 0 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-
 /* ── "+ N more" button ───────────────────────────────────────────────────── */
 #nba-calendar .nba-more-btn {
   display: block; font-size: 10px; font-weight: 600; color: #018F99; cursor: pointer;
@@ -242,7 +235,10 @@
 }
 #nba-calendar .nba-tooltip.flip { left: auto; right: calc(100% + 8px); }
 #nba-calendar .nba-event-chip:hover  .nba-tooltip,
-#nba-calendar .nba-photo-wrap:hover  .nba-tooltip { display: block; }
+#nba-calendar .nba-photo-wrap:hover  .nba-tooltip,
+#nba-calendar .nba-list-event:hover  .nba-tooltip { display: block; }
+/* List-view tooltip drops below the row instead of floating to the side */
+#nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
 #nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 4px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
 #nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 3px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-location { font-size: 11px; color: #555; margin-bottom: 5px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
@@ -265,7 +261,7 @@
 #nba-calendar .nba-list-event {
   display: flex; gap: 14px; padding: 14px !important; border: 1.5px solid #e8f3ec;
   margin-bottom: 8px !important; margin-top: 0 !important; cursor: pointer; transition: box-shadow .15s, border-color .15s;
-  background: #fff; text-decoration: none !important;
+  background: #fff; text-decoration: none !important; position: relative !important;
 }
 #nba-calendar .nba-list-event:hover { box-shadow: 0 2px 10px rgba(21,82,43,.10); border-color: #1BA249; }
 #nba-calendar .nba-list-event.today-grp { border-left: 3px solid #1BA249; }
@@ -273,11 +269,9 @@
 #nba-calendar .nba-list-body { flex: 1; min-width: 0; margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
 #nba-calendar .nba-list-name { font-size: 14px !important; font-weight: 700 !important; color: #15522B !important; margin: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
 #nba-calendar .nba-list-time { font-size: 12px !important; font-weight: 600 !important; color: #018F99 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
-#nba-calendar .nba-list-loc  { font-size: 12px !important; color: #666 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
 #nba-calendar .nba-list-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 #nba-calendar .nba-tag       { display: inline-block; padding: 2px 8px !important; font-size: 9.5px; font-weight: 700; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tag-cat   { background: #f0f7f2; color: #15522B; }
-#nba-calendar .nba-tag-free  { background: #e8f7ee; color: #1BA249; }
 #nba-calendar .nba-tag-paid  { background: #fff3e0; color: #c0540a; }
 #nba-calendar .nba-list-empty { padding: 40px 0 !important; text-align: center; font-size: 13px; color: #999; margin: 0 !important; }
 
@@ -309,12 +303,11 @@
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
 #nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
-#nba-calendar:not(#nba-x) .nba-chip-loc  { font-size: 9px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-name { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-photo-loc { font-size: 9px !important; line-height: 1.2 !important; margin: 1px 0 0 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
+#nba-calendar:not(#nba-x) .nba-list-event { position: relative !important; }
 #nba-calendar:not(#nba-x) .nba-list { display: block !important; padding: 16px 24px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-group { display: block !important; margin-bottom: 12px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-date-hdr { display: block !important; padding: 5px 0 !important; margin-bottom: 6px !important; margin-top: 0 !important; line-height: 1.2 !important; }
@@ -322,7 +315,6 @@
 #nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
 #nba-calendar:not(#nba-x) .nba-list-name { font-size: 14px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-list-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-list-loc  { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-tag { padding: 2px 8px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-list-tags { margin: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-footer { padding: 8px 24px !important; margin: 0 !important; }
@@ -369,7 +361,7 @@
 
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
-    const { search, categories, price, regOpen } = state.filters;
+    const { search, categories, price } = state.filters;
 
     // Build the set of allowed Neon category names based on active chip labels.
     // If no chips are selected, all ALLOWED_CATS are shown.
@@ -409,9 +401,6 @@
         if (price[0] === 'paid' &&  e.isFree) return false;
       }
 
-      // 5. Registration open (hide full events)
-      if (regOpen && e.isFull) return false;
-
       return true;
     });
   }
@@ -421,20 +410,17 @@
     const photo = e.imageUrl
       ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:100px;object-fit:cover;display:block!important;margin:0 0 8px 0!important;padding:0!important">`
       : '';
-    const loc       = e.locationName ? `<div class="nba-tt-location">&#128205; ${h(e.locationName)}</div>` : '';
     const shortDesc = e.summary
       ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
-    const desc = shortDesc ? `<div class="nba-tt-desc">${h(shortDesc)}</div>` : '';
-    const cat  = e.category     ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
-    const price = e.isFree
-      ? `<span class="nba-tt-tag">Free</span>`
-      : `<span class="nba-tt-tag paid">Paid</span>`;
+    const desc  = shortDesc ? `<div class="nba-tt-desc">${h(shortDesc)}</div>` : '';
+    const cat   = e.category  ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
+    const price = !e.isFree   ? `<span class="nba-tt-tag paid">Paid</span>` : '';
     return `<div class="nba-tooltip${flip?' flip':''}">
       ${photo}
       <div class="nba-tt-title">${h(e.name)}</div>
       <div class="nba-tt-time">${fmtRange(e.startTime, e.endTime)}</div>
-      ${loc}${desc}<div>${cat}${price}</div>
+      ${desc}<div>${cat}${price}</div>
     </div>`;
   }
 
@@ -492,7 +478,6 @@
                 <div class="nba-photo-info">
                   <span class="nba-photo-time">${h(timeStr)}</span>
                   <span class="nba-photo-name">${h(e.name)}</span>
-                  ${e.locationName ? `<span class="nba-photo-loc" style="display:block!important;margin:1px 0 0 0!important;padding:0!important;line-height:1.2!important;font-size:9px!important;color:#555!important;white-space:nowrap!important;overflow:hidden!important">&#128205; ${h(e.locationName)}</span>` : ''}
                 </div>
               </a>
               ${ttHTML(e, flip)}
@@ -503,7 +488,6 @@
           <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
             <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
             <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 4)!important;overflow:hidden!important">${h(e.name)}</span>
-            ${e.locationName ? `<span class="nba-chip-loc" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:9px!important;white-space:nowrap!important;overflow:hidden!important;color:#fff!important;opacity:.78">${h(e.locationName)}</span>` : ''}
             ${ttHTML(e, flip)}
           </a>`;
       }).join('');
@@ -550,22 +534,19 @@
           ? `<img class="nba-list-img" src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'">`
           : '';
         const time = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
-        const loc  = e.locationName ? `<div class="nba-list-loc">&#128205; ${h(e.locationName)}</div>` : '';
-        const cat  = e.category    ? `<span class="nba-tag nba-tag-cat">${h(e.category)}</span>` : '';
-        const prc  = e.isFree
-          ? `<span class="nba-tag nba-tag-free">Free</span>`
-          : `<span class="nba-tag nba-tag-paid">Paid</span>`;
+        const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(e.category)}</span>` : '';
+        const prc  = !e.isFree  ? `<span class="nba-tag nba-tag-paid">Paid</span>` : '';
 
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener"
-             class="nba-list-event${isT?' today-grp':''}" style="display:flex!important;padding:12px!important;margin:0 0 6px 0!important">
+             class="nba-list-event${isT?' today-grp':''}" style="display:flex!important;padding:12px!important;margin:0 0 6px 0!important;position:relative!important">
             ${img}
             <div class="nba-list-body" style="display:grid!important;row-gap:3px!important;align-content:start!important;margin:0!important;padding:0!important;flex:1;min-width:0">
               <div class="nba-list-name" style="margin:0!important;padding:0!important;line-height:1.3!important">${h(e.name)}</div>
               <div class="nba-list-time" style="margin:0!important;padding:0!important;line-height:1.2!important">${h(time)}</div>
-              ${loc}
               <div class="nba-list-tags" style="margin:0!important;padding:0!important">${cat}${prc}</div>
             </div>
+            ${ttHTML(e, false)}
           </a>`;
       }).join('');
 
@@ -590,7 +571,6 @@
 
     const freeOn   = filters.price.length === 0 || filters.price.includes('free');
     const paidOn   = filters.price.length === 0 || filters.price.includes('paid');
-    const regOpenOn = filters.regOpen;
 
     return `
       <div class="nba-filters">
@@ -607,10 +587,6 @@
         <div class="nba-filter-group">
           <button class="nba-filter-chip${freeOn ? ' active' : ''}" data-filter="price" data-value="free">Free</button>
           <button class="nba-filter-chip${paidOn ? ' active' : ''}" data-filter="price" data-value="paid">Paid</button>
-        </div>
-        <div class="nba-filter-divider"></div>
-        <div class="nba-filter-group">
-          <button class="nba-filter-chip${regOpenOn ? ' active' : ''}" data-filter="regopen" data-value="1">Registration Open</button>
         </div>
       </div>`;
   }
@@ -706,11 +682,6 @@
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
       f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
     });
-    q('#nba-calendar .nba-chip-loc').forEach(el => {
-      f(el, 'display', 'block'); f(el, 'margin', '0');
-      f(el, 'padding', '0'); f(el, 'line-height', '1.2'); f(el, 'min-height', '0');
-      f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
-    });
   }
 
   // ── Attach all event listeners after each render ─────────────────────────────
@@ -742,20 +713,16 @@
 
     // View toggle
     el.querySelectorAll('.nba-view-btn').forEach(b =>
-      b.addEventListener('click', () => { state.view = b.dataset.view; render(); })
+      b.addEventListener('click', () => { state.view = b.dataset.view; state._autoList = false; render(); })
     );
 
     // Filter chips
     el.querySelectorAll('.nba-filter-chip[data-filter]').forEach(b =>
       b.addEventListener('click', () => {
         const { filter, value } = b.dataset;
-        if (filter === 'regopen') {
-          state.filters.regOpen = !state.filters.regOpen;
-        } else {
-          const arr = filter === 'cat' ? state.filters.categories : state.filters.price;
-          const i   = arr.indexOf(value);
-          i === -1 ? arr.push(value) : arr.splice(i, 1);
-        }
+        const arr = filter === 'cat' ? state.filters.categories : state.filters.price;
+        const i   = arr.indexOf(value);
+        i === -1 ? arr.push(value) : arr.splice(i, 1);
         render();
       })
     );
@@ -846,6 +813,23 @@
     }
   }
 
+  // ── Responsive: auto-switch to list view when widget is too narrow ───────────
+  const NARROW_PX = 560;
+  function checkResponsive() {
+    const el = document.getElementById('nba-calendar');
+    if (!el) return;
+    const narrow = el.offsetWidth > 0 && el.offsetWidth < NARROW_PX;
+    if (narrow && state.view === 'month') {
+      state.view = 'list';
+      state._autoList = true;
+      render();
+    } else if (!narrow && state._autoList) {
+      state.view = 'month';
+      state._autoList = false;
+      render();
+    }
+  }
+
   // ── Bootstrap ────────────────────────────────────────────────────────────────
   function init() {
     injectStyles();
@@ -854,6 +838,14 @@
       el    = document.createElement('div');
       el.id = 'nba-calendar';
       document.body.appendChild(el);
+    }
+    // Auto-switch to list on narrow screens
+    if (window.ResizeObserver) {
+      new ResizeObserver(checkResponsive).observe(el);
+    }
+    if (el.offsetWidth > 0 && el.offsetWidth < NARROW_PX) {
+      state.view = 'list';
+      state._autoList = true;
     }
     loadMonth();
   }
