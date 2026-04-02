@@ -49,8 +49,6 @@
     // filters.categories holds active chip *labels* from CATEGORY_CONFIG
     filters: { categories: [], price: [], search: '' },
     _autoList: false,
-    _listEvents: [],       // all-upcoming events for list view
-    _listLoaded: false,
     _cache:  {},
     _searchTimer: null,
   };
@@ -239,7 +237,7 @@
 #nba-calendar .nba-tooltip {
   position: absolute; z-index: 99999; background: #fff;
   border: 1.5px solid #d4e8da; box-shadow: 0 4px 20px rgba(0,0,0,.18);
-  padding: 8px !important; width: 230px; pointer-events: none;
+  padding: 12px !important; width: 230px; pointer-events: none;
   top: 0; left: calc(100% + 8px); display: none; margin: 0 !important;
 }
 #nba-calendar .nba-tooltip.flip { left: auto; right: calc(100% + 8px); }
@@ -248,12 +246,12 @@
 #nba-calendar .nba-list-event:hover  .nba-tooltip { display: block; }
 /* List-view tooltip drops below the row instead of floating to the side */
 #nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
-#nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 2px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
-#nba-calendar .nba-tt-location { font-size: 11px; color: #555; margin-bottom: 3px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 4px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
+#nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 3px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-location { font-size: 11px; color: #555; margin-bottom: 5px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-desc     {
   font-size: 10.5px; color: #444; line-height: 1.4 !important;
-  border-top: 1px solid #e8f3ec; padding-top: 4px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 3px !important; margin-bottom: 0 !important;
+  border-top: 1px solid #e8f3ec; padding-top: 6px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 4px !important; margin-bottom: 0 !important;
   overflow: hidden;
 }
 #nba-calendar .nba-tt-tag      { display: inline-block; background: #f0f7f2; color: #15522B; padding: 2px 7px !important; font-size: 9.5px; font-weight: 700; margin-top: 5px !important; margin-right: 3px !important; margin-bottom: 0 !important; margin-left: 0 !important; line-height: 1 !important; }
@@ -368,16 +366,6 @@
     return `${DAYS_LONG[dt.getDay()]}, ${MONTHS[m-1]} ${d}`;
   }
 
-  // "April 2, 6:30pm–8:30pm" for tooltip time line
-  function fmtDateTimeRange(dateStr, startTime, endTime) {
-    const [, m, d] = (dateStr || '').split('-').map(Number);
-    const datePart = (m && d) ? `${MONTHS[m-1]} ${d}` : '';
-    const timePart = fmtRange(startTime, endTime);
-    if (!datePart) return timePart;
-    if (timePart === 'All Day') return `${datePart} — All Day`;
-    return `${datePart}, ${timePart}`;
-  }
-
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
     const { search, categories, price } = state.filters;
@@ -438,7 +426,7 @@
     return `<div class="nba-tooltip${flip?' flip':''}">
       ${photo}
       <div class="nba-tt-title">${h(e.name)}</div>
-      <div class="nba-tt-time">${h(fmtDateTimeRange(e.startDate, e.startTime, e.endTime))}</div>
+      <div class="nba-tt-time">${fmtRange(e.startTime, e.endTime)}</div>
       ${desc}<div>${cat}${price}</div>
     </div>`;
   }
@@ -533,33 +521,9 @@
 
   // ── List view builder ────────────────────────────────────────────────────────
   function buildList() {
-    // Use the all-upcoming list events (filtered by search/category/price)
-    const today = todayISO();
-    const pool  = state._listLoaded ? state._listEvents : state.events;
-    const { search, categories, price } = state.filters;
-    let activeCats;
-    if (categories.length === 0) {
-      activeCats = new Set(ALLOWED_CATS);
-    } else {
-      activeCats = new Set(
-        CATEGORY_CONFIG.filter(c => categories.includes(c.label)).flatMap(c => c.neonCats)
-      );
-    }
-    const filtered = pool.filter(e => {
-      if (e.startDate < today) return false;
-      if (!activeCats.has(e.category)) return false;
-      if (price.length === 1) {
-        if (price[0] === 'free' && !e.isFree) return false;
-        if (price[0] === 'paid' &&  e.isFree) return false;
-      }
-      if (search) {
-        const q = search.toLowerCase();
-        if (!(e.name||'').toLowerCase().includes(q) && !(e.summary||'').toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
+    const filtered = getFiltered();
     if (!filtered.length) {
-      return `<div class="nba-list"><div class="nba-list-empty">No upcoming events found.</div></div>`;
+      return `<div class="nba-list"><div class="nba-list-empty">No events found for this period.</div></div>`;
     }
 
     const groups  = {};
@@ -653,10 +617,10 @@
           <button class="nba-search-clear${state.filters.search ? ' visible' : ''}" id="nba-search-clear" title="Clear search">&#10005;</button>
         </div>
         <div class="nba-header-right">
-          ${view === 'month' ? `<button class="nba-btn nba-btn-today" id="nba-today-btn">Today</button>` : ''}
-          ${view === 'month' ? `<button class="nba-btn nba-btn-nav" id="nba-prev-btn">&#8249;</button>` : ''}
-          <span class="nba-month-label">${view === 'month' ? `${MONTHS[month]} ${year}` : 'Upcoming Events'}</span>
-          ${view === 'month' ? `<button class="nba-btn nba-btn-nav" id="nba-next-btn">&#8250;</button>` : ''}
+          <button class="nba-btn nba-btn-today" id="nba-today-btn">Today</button>
+          <button class="nba-btn nba-btn-nav"   id="nba-prev-btn">&#8249;</button>
+          <span class="nba-month-label">${MONTHS[month]} ${year}</span>
+          <button class="nba-btn nba-btn-nav"   id="nba-next-btn">&#8250;</button>
           <div class="nba-view-toggle">
             <button class="nba-view-btn${view==='month'?' active':''}" data-view="month">Month</button>
             <button class="nba-view-btn${view==='list' ?' active':''}" data-view="list">List</button>
@@ -755,11 +719,7 @@
 
     // View toggle
     el.querySelectorAll('.nba-view-btn').forEach(b =>
-      b.addEventListener('click', () => {
-        state.view = b.dataset.view;
-        state._autoList = false;
-        if (state.view === 'list') { loadListEvents(); } else { render(); }
-      })
+      b.addEventListener('click', () => { state.view = b.dataset.view; state._autoList = false; render(); })
     );
 
     // Filter chips
@@ -810,41 +770,6 @@
         }, 0);
       })
     );
-  }
-
-  // ── Load all upcoming events (4 months) for list view ───────────────────────
-  async function loadListEvents() {
-    if (state._listLoaded) { render(); return; }
-    const t   = new Date();
-    const startDate = isoDate(t.getFullYear(), t.getMonth(), t.getDate());
-    const end = new Date(t.getFullYear(), t.getMonth() + 4, 0); // last day of 4th month out
-    const endDate   = isoDate(end.getFullYear(), end.getMonth(), end.getDate());
-
-    state.loading = true; state.error = null; render();
-    try {
-      const res  = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=200`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      let events = data.events || [];
-      const total = data.pagination?.totalResults ?? events.length;
-      const size  = data.pagination?.pageSize      ?? 200;
-      const maxPages = Math.ceil(total / size);
-      for (let pg = 2; pg <= maxPages; pg++) {
-        const pr = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${pg}`);
-        if (!pr.ok) break;
-        const pd = await pr.json();
-        events = events.concat(pd.events || []);
-      }
-      events = events.filter(e => e.startDate >= startDate && e.startDate <= endDate);
-      state._listEvents = events;
-      state._listLoaded = true;
-      state.error = null;
-    } catch (err) {
-      state.error = err.message;
-    } finally {
-      state.loading = false;
-      render();
-    }
   }
 
   // ── Data loading ─────────────────────────────────────────────────────────────
@@ -914,7 +839,7 @@
     if (narrow && state.view === 'month') {
       state.view = 'list';
       state._autoList = true;
-      loadListEvents();
+      render();
     } else if (!narrow && state._autoList) {
       state.view = 'month';
       state._autoList = false;
@@ -938,12 +863,8 @@
     if (el.offsetWidth > 0 && el.offsetWidth < NARROW_PX) {
       state.view = 'list';
       state._autoList = true;
-      loadListEvents();
-    } else {
-      loadMonth();
     }
-    // Pre-fetch upcoming list events in background so list tab is instant
-    if (state.view === 'month') setTimeout(loadListEvents, 2000);
+    loadMonth();
   }
 
   if (document.readyState === 'loading') {
