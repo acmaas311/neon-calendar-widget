@@ -93,7 +93,6 @@ export default async function handler(req, res) {
                    || (typeof e.location === 'string' ? e.location : '')
                    || e.locationName
                    || '',
-        _rawLocation: e.location ?? null,   // TEMP DEBUG — remove after confirming
         // Neon returns category as an array of strings e.g. ["Festivals"]
         category:     (Array.isArray(e.category) ? e.category[0] : e.category?.name) || '',
         // Strip HTML tags and decode entities Neon embeds in summary/description
