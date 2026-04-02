@@ -414,7 +414,7 @@
       : '';
     const loc       = e.locationName ? `<div class="nba-tt-location">&#128205; ${h(e.locationName)}</div>` : '';
     const shortDesc = e.summary
-      ? (e.summary.length > 300 ? e.summary.substring(0, 300) + '…' : e.summary)
+      ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
     const desc = shortDesc ? `<div class="nba-tt-desc">${h(shortDesc)}</div>` : '';
     const cat  = e.category     ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
