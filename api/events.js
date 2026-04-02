@@ -67,6 +67,13 @@ export default async function handler(req, res) {
 
     const data = await neonRes.json();
 
+    // ── TEMP DEBUG: log raw keys of first event to find location field ────
+    if (data.events?.length) {
+      const raw = data.events[0];
+      console.log('RAW EVENT KEYS:', Object.keys(raw));
+      console.log('RAW FULL EVENT:', JSON.stringify(raw, null, 2));
+    }
+
     // ── Transform ──────────────────────────────────────────────────────────
     const events = (data.events || []).map(e => {
       // Determine if the event has any paid registration sessions
