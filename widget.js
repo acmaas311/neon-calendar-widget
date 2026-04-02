@@ -184,7 +184,8 @@
 #nba-calendar .nba-cal-cell.is-today .nba-day-num    { background: #1BA249; color: #fff; }
 
 /* ── Event chip (no photo) ───────────────────────────────────────────────── */
-#nba-calendar .nba-event-wrap { position: relative; margin: 0 !important; padding: 0 !important; flex-shrink: 0 !important; }
+#nba-calendar .nba-chips-stack { display: grid !important; grid-template-columns: 1fr !important; row-gap: 3px !important; align-content: start !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar .nba-event-wrap { position: relative; margin: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-event-chip {
   display: flex !important; flex-direction: column !important; gap: 2px !important;
   background: #1BA249; color: #fff !important;
@@ -493,9 +494,9 @@
         : '';
 
       return `
-        <div class="nba-cal-cell${todayCls}" style="display:grid!important;grid-template-columns:1fr!important;align-content:start!important;row-gap:3px!important;padding:7px!important">
+        <div class="nba-cal-cell${todayCls}" style="padding:7px!important">
           <div class="nba-day-num" style="margin:0 0 4px 0!important;padding:0!important;line-height:1!important">${cell.day}</div>
-          ${eventsHTML}${moreHTML}
+          <div class="nba-chips-stack" style="display:grid!important;grid-template-columns:1fr!important;row-gap:3px!important;align-content:start!important;margin:0!important;padding:0!important">${eventsHTML}${moreHTML}</div>
         </div>`;
     }).join('');
 
@@ -638,21 +639,20 @@
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
-    // Cell: grid so align-content:start stacks chips tightly (same fix as list-body)
-    q('#nba-calendar .nba-cal-cell').forEach(el => {
+    // chips-stack: fresh class the host has no rules for — grid stacks chips tightly
+    q('#nba-calendar .nba-chips-stack').forEach(el => {
       f(el, 'display', 'grid');
       f(el, 'grid-template-columns', '1fr');
-      f(el, 'align-content', 'start');
       f(el, 'row-gap', '3px');
-      f(el, 'padding', '7px');
-      f(el, 'min-height', '0');
+      f(el, 'align-content', 'start');
+      f(el, 'margin', '0');
+      f(el, 'padding', '0');
     });
     q('#nba-calendar .nba-event-wrap').forEach(el => {
       f(el, 'display', 'block');
       f(el, 'margin', '0');
       f(el, 'padding', '0');
       f(el, 'min-height', '0');
-      f(el, 'flex-shrink', '0');
     });
     // Chip: flex column so gap controls spacing between time and title
     q('#nba-calendar .nba-event-chip').forEach(el => {
