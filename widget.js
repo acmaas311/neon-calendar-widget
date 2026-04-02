@@ -29,8 +29,8 @@
   // arrays are hidden from the widget entirely.
   const CATEGORY_CONFIG = [
     { label: 'Festivals',               neonCats: ['Festivals'] },
-    { label: 'Outings & Walks',         neonCats: ['Free and Partner Walks', 'Local Trips'] },
-    { label: 'Members-only Events',     neonCats: ['In-person Members-only Events'] },
+    { label: 'Outings & Classes',        neonCats: ['Free and Partner Walks', 'Local Trips'] },
+    { label: 'Member Events',           neonCats: ['In-person Members-only Events'] },
     { label: 'Lectures',                neonCats: ['Lectures'] },
   ];
 
@@ -84,8 +84,6 @@
   display: flex !important; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   margin: 0 !important;
 }
-#nba-calendar .nba-title    { font-size: 17px !important; font-weight: 700 !important; letter-spacing: .03em; text-transform: uppercase; line-height: 1.1 !important; color: #fff !important; margin: 0 !important; padding: 0 !important; }
-#nba-calendar .nba-subtitle { font-size: 10px !important; font-weight: 400 !important; opacity: .75; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px !important; margin-bottom: 0 !important; padding: 0 !important; color: #fff !important; line-height: 1.2 !important; }
 #nba-calendar .nba-header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 /* ── Header buttons ─────────────────────────────────────────────────────── */
@@ -123,11 +121,18 @@
 #nba-calendar .nba-search {
   background: #fff; border: 1.5px solid #c0d8c9; color: #222;
   font-family: 'Montserrat', sans-serif !important; font-size: 12px;
-  padding: 7px 12px 7px 32px !important; width: 210px; outline: none; transition: border-color .15s;
+  padding: 7px 28px 7px 32px !important; width: 210px; outline: none; transition: border-color .15s;
   -webkit-appearance: none; margin: 0 !important; line-height: 1 !important;
 }
 #nba-calendar .nba-search::placeholder { color: #aaa; }
 #nba-calendar .nba-search:focus { border-color: #1BA249; }
+#nba-calendar .nba-search-clear {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: #999; font-size: 15px;
+  padding: 0 !important; line-height: 1; display: none; font-family: sans-serif;
+}
+#nba-calendar .nba-search-clear.visible { display: block; }
+#nba-calendar .nba-search-clear:hover { color: #333; }
 #nba-calendar .nba-filter-label {
   font-size: 10px; font-weight: 700; color: #15522B;
   text-transform: uppercase; letter-spacing: .07em; white-space: nowrap;
@@ -284,9 +289,7 @@
 /* Selectors here have specificity (2,0,0)+(class) = (2,1,0), higher than   */
 /* virtually any host selector, even with !important from same specificity.  */
 #nba-calendar:not(#nba-x) * { line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-header { padding: 10px 24px !important; margin: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-title { line-height: 1.1 !important; margin: 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-subtitle { line-height: 1.2 !important; margin-top: 2px !important; margin-bottom: 0 !important; margin-left: 0 !important; margin-right: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-header { padding: 8px 16px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-header-right { margin: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-btn { padding: 7px 14px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-btn-nav { padding: 7px 12px !important; }
@@ -574,12 +577,6 @@
 
     return `
       <div class="nba-filters">
-        <div class="nba-search-wrap">
-          <i class="nba-search-icon">&#128269;</i>
-          <input class="nba-search" id="nba-search-input" type="text"
-                 placeholder="Search events&hellip;" value="${h(filters.search)}" autocomplete="off">
-        </div>
-        <div class="nba-filter-divider"></div>
         <span class="nba-filter-label">Category</span>
         <div class="nba-filter-group">${catChips}</div>
         <div class="nba-filter-divider"></div>
@@ -608,10 +605,12 @@
     }
 
     el.innerHTML = `
-      <div class="nba-header" style="padding:10px 24px!important;gap:8px!important;height:auto!important;min-height:0!important">
-        <div style="margin:0!important;padding:0!important">
-          <div class="nba-title" style="margin:0!important;padding:0!important;line-height:1.1!important">NYC Bird Alliance</div>
-          <div class="nba-subtitle" style="margin:2px 0 0 0!important;padding:0!important;line-height:1.2!important">Events &amp; Programs</div>
+      <div class="nba-header" style="padding:8px 16px!important;gap:8px!important;height:auto!important;min-height:0!important">
+        <div class="nba-search-wrap" style="flex-shrink:0">
+          <i class="nba-search-icon">&#128269;</i>
+          <input class="nba-search" id="nba-search-input" type="text"
+                 placeholder="Search events&hellip;" value="${h(state.filters.search)}" autocomplete="off">
+          <button class="nba-search-clear${state.filters.search ? ' visible' : ''}" id="nba-search-clear" title="Clear search">&#10005;</button>
         </div>
         <div class="nba-header-right">
           <button class="nba-btn nba-btn-today" id="nba-today-btn">Today</button>
@@ -641,15 +640,7 @@
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
     // Header — also set height:auto in case host has a fixed height rule
     q('#nba-calendar .nba-header').forEach(el => {
-      f(el, 'padding', '10px 24px'); f(el, 'height', 'auto'); f(el, 'min-height', '0');
-    });
-    q('#nba-calendar .nba-title').forEach(el => {
-      f(el, 'margin', '0'); f(el, 'padding', '0'); f(el, 'line-height', '1.1');
-      f(el, 'height', 'auto'); f(el, 'min-height', '0');
-    });
-    q('#nba-calendar .nba-subtitle').forEach(el => {
-      f(el, 'margin', '2px 0 0 0'); f(el, 'padding', '0'); f(el, 'line-height', '1.2');
-      f(el, 'height', 'auto'); f(el, 'min-height', '0');
+      f(el, 'padding', '8px 16px'); f(el, 'height', 'auto'); f(el, 'min-height', '0');
     });
     // chips-stack: grid so align-content:start and align-items:start pack chips tightly
     q('#nba-calendar .nba-chips-stack').forEach(el => {
@@ -731,6 +722,9 @@
     el.querySelector('#nba-search-input')?.addEventListener('input', e => {
       clearTimeout(state._searchTimer);
       const val = e.target.value;
+      // show/hide × immediately without waiting for debounce
+      const clr = el.querySelector('#nba-search-clear');
+      if (clr) clr.classList.toggle('visible', !!val);
       state._searchTimer = setTimeout(() => {
         state.filters.search = val;
         render();
@@ -738,6 +732,14 @@
         const inp = document.getElementById('nba-search-input');
         if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
       }, 260);
+    });
+
+    // Search clear ×
+    el.querySelector('#nba-search-clear')?.addEventListener('click', () => {
+      clearTimeout(state._searchTimer);
+      state.filters.search = '';
+      render();
+      document.getElementById('nba-search-input')?.focus();
     });
 
     // "+ N more" → switch to list view
