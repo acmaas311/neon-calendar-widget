@@ -199,7 +199,7 @@
 }
 #nba-calendar .nba-chip-title {
   display: block !important; font-size: 11px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
-  overflow: hidden !important; max-height: calc(1.3em * 2) !important; padding: 0 !important; margin: 0 !important;
+  overflow: hidden !important; max-height: calc(1.3em * 3) !important; padding: 0 !important; margin: 0 !important;
 }
 
 /* ── Photo event card ────────────────────────────────────────────────────── */
@@ -242,7 +242,7 @@
 #nba-calendar .nba-tt-desc     {
   font-size: 10.5px; color: #444; line-height: 1.4 !important;
   border-top: 1px solid #e8f3ec; padding-top: 6px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 4px !important; margin-bottom: 0 !important;
-  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 #nba-calendar .nba-tt-tag      { display: inline-block; background: #f0f7f2; color: #15522B; padding: 2px 7px !important; font-size: 9.5px; font-weight: 700; margin-top: 5px !important; margin-right: 3px !important; margin-bottom: 0 !important; margin-left: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tt-tag.paid { background: #fff3e0; color: #c0540a; }
@@ -301,7 +301,7 @@
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 2) !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 3) !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
@@ -492,7 +492,7 @@
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
             <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
-            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 2)!important;overflow:hidden!important">${h(e.name)}</span>
+            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 3)!important;overflow:hidden!important">${h(e.name)}</span>
             ${ttHTML(e, flip)}
           </a>`;
       }).join('');
@@ -693,7 +693,7 @@
     q('#nba-calendar .nba-chip-title').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
-      f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 2)');
+      f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 3)');
     });
   }
 
