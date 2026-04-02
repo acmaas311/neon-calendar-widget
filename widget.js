@@ -621,7 +621,7 @@
     }
 
     el.innerHTML = `
-      <div class="nba-header" style="padding:10px 24px!important;gap:8px!important">
+      <div class="nba-header" style="padding:10px 24px!important;gap:8px!important;height:auto!important;min-height:0!important">
         <div style="margin:0!important;padding:0!important">
           <div class="nba-title" style="margin:0!important;padding:0!important;line-height:1.1!important">NYC Bird Alliance</div>
           <div class="nba-subtitle" style="margin:2px 0 0 0!important;padding:0!important;line-height:1.2!important">Events &amp; Programs</div>
@@ -652,15 +652,17 @@
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
-    // Header
+    // Header — also set height:auto in case host has a fixed height rule
     q('#nba-calendar .nba-header').forEach(el => {
-      f(el, 'padding', '10px 24px');
+      f(el, 'padding', '10px 24px'); f(el, 'height', 'auto'); f(el, 'min-height', '0');
     });
     q('#nba-calendar .nba-title').forEach(el => {
       f(el, 'margin', '0'); f(el, 'padding', '0'); f(el, 'line-height', '1.1');
+      f(el, 'height', 'auto'); f(el, 'min-height', '0');
     });
     q('#nba-calendar .nba-subtitle').forEach(el => {
       f(el, 'margin', '2px 0 0 0'); f(el, 'padding', '0'); f(el, 'line-height', '1.2');
+      f(el, 'height', 'auto'); f(el, 'min-height', '0');
     });
     // chips-stack: grid so align-content:start and align-items:start pack chips tightly
     q('#nba-calendar .nba-chips-stack').forEach(el => {

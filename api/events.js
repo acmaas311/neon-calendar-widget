@@ -91,7 +91,8 @@ export default async function handler(req, res) {
         locationName: e.location?.locationName || '',
         // Neon returns category as an array of strings e.g. ["Festivals"]
         category:     (Array.isArray(e.category) ? e.category[0] : e.category?.name) || '',
-        summary:      e.summary               || '',
+        // Strip HTML tags Neon may embed in summary/description
+        summary: ((e.summary || e.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()),
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,
         isFull,
