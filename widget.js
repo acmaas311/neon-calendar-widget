@@ -181,7 +181,8 @@
   display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0 !important; line-height: 1 !important;
 }
 #nba-calendar .nba-cal-cell.other-month .nba-day-num { color: #ccc; }
-#nba-calendar .nba-cal-cell.is-today .nba-day-num    { background: #1BA249; color: #fff; }
+#nba-calendar .nba-cal-cell.is-today                 { background: rgba(27,162,73,.10) !important; }
+#nba-calendar .nba-cal-cell.is-today .nba-day-num    { background: rgba(27,162,73,.22); color: #15522B; }
 
 /* ── Event chip (no photo) ───────────────────────────────────────────────── */
 #nba-calendar .nba-chips-stack { display: grid !important; grid-template-columns: 1fr !important; row-gap: 3px !important; align-content: start !important; align-items: start !important; margin: 0 !important; padding: 0 !important; }
@@ -199,7 +200,7 @@
 }
 #nba-calendar .nba-chip-title {
   display: block !important; font-size: 11px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
-  overflow: hidden !important; max-height: calc(1.3em * 3) !important; padding: 0 !important; margin: 0 !important;
+  overflow: hidden !important; max-height: calc(1.3em * 4) !important; padding: 0 !important; margin: 0 !important;
 }
 
 /* ── Photo event card ────────────────────────────────────────────────────── */
@@ -301,7 +302,7 @@
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 3) !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
@@ -492,7 +493,7 @@
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
             <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
-            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 3)!important;overflow:hidden!important">${h(e.name)}</span>
+            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 4)!important;overflow:hidden!important">${h(e.name)}</span>
             ${ttHTML(e, flip)}
           </a>`;
       }).join('');
@@ -579,7 +580,7 @@
 
     const freeOn   = filters.price.length === 0 || filters.price.includes('free');
     const paidOn   = filters.price.length === 0 || filters.price.includes('paid');
-    const regOpenOn = !filters.regOpen;
+    const regOpenOn = filters.regOpen;
 
     return `
       <div class="nba-filters">
@@ -693,7 +694,7 @@
     q('#nba-calendar .nba-chip-title').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
-      f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 3)');
+      f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
     });
   }
 
