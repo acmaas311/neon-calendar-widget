@@ -88,10 +88,13 @@ export default async function handler(req, res) {
         startTime:    e.startTime || null,  // "HH:mm:ss" or null
         endDate:      e.endDate,
         endTime:      e.endTime   || null,
+        // NeonCRM v2 list API returns location as flat address fields, not
+        // a nested object. Prefer addressLine1 (venue/street) + city.
         locationName: e.location?.locationName
                    || e.location?.name
                    || (typeof e.location === 'string' ? e.location : '')
                    || e.locationName
+                   || [e.addressLine1, e.addressCity].filter(Boolean).join(', ')
                    || '',
         // Neon returns category as an array of strings e.g. ["Festivals"]
         category:     (Array.isArray(e.category) ? e.category[0] : e.category?.name) || '',
@@ -121,7 +124,6 @@ export default async function handler(req, res) {
     return res.status(200).json({
       events,
       pagination: data.pagination ?? {},
-      _debugFirstRaw: data.events?.[0] ?? null,  // TEMP — remove after finding location field
     });
 
   } catch (err) {
