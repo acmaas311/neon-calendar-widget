@@ -410,10 +410,13 @@
   // ── Tooltip HTML ─────────────────────────────────────────────────────────────
   function ttHTML(e, flip) {
     const photo = e.imageUrl
-      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:90px;object-fit:cover;display:block;margin:0 0 8px 0!important">`
+      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:100px;object-fit:cover;display:block!important;margin:0 0 8px 0!important;padding:0!important">`
       : '';
-    const loc  = e.locationName ? `<div class="nba-tt-location">&#128205; ${h(e.locationName)}</div>` : '';
-    const desc = e.summary      ? `<div class="nba-tt-desc">${h(e.summary)}</div>` : '';
+    const loc       = e.locationName ? `<div class="nba-tt-location">&#128205; ${h(e.locationName)}</div>` : '';
+    const shortDesc = e.summary
+      ? (e.summary.length > 150 ? e.summary.substring(0, 150) + '…' : e.summary)
+      : '';
+    const desc = shortDesc ? `<div class="nba-tt-desc">${h(shortDesc)}</div>` : '';
     const cat  = e.category     ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
     const price = e.isFree
       ? `<span class="nba-tt-tag">Free</span>`
@@ -618,10 +621,10 @@
     }
 
     el.innerHTML = `
-      <div class="nba-header">
-        <div>
-          <div class="nba-title">NYC Bird Alliance</div>
-          <div class="nba-subtitle">Events &amp; Programs</div>
+      <div class="nba-header" style="padding:10px 24px!important;gap:8px!important">
+        <div style="margin:0!important;padding:0!important">
+          <div class="nba-title" style="margin:0!important;padding:0!important;line-height:1.1!important">NYC Bird Alliance</div>
+          <div class="nba-subtitle" style="margin:2px 0 0 0!important;padding:0!important;line-height:1.2!important">Events &amp; Programs</div>
         </div>
         <div class="nba-header-right">
           <button class="nba-btn nba-btn-today" id="nba-today-btn">Today</button>
@@ -645,10 +648,20 @@
     setTimeout(enforceMonthStyles, 1000);
   }
 
-  // ── Force calendar cell layout regardless of host CSS/JS ─────────────────────
+  // ── Force layout overrides regardless of host CSS/JS ─────────────────────────
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
+    // Header
+    q('#nba-calendar .nba-header').forEach(el => {
+      f(el, 'padding', '10px 24px');
+    });
+    q('#nba-calendar .nba-title').forEach(el => {
+      f(el, 'margin', '0'); f(el, 'padding', '0'); f(el, 'line-height', '1.1');
+    });
+    q('#nba-calendar .nba-subtitle').forEach(el => {
+      f(el, 'margin', '2px 0 0 0'); f(el, 'padding', '0'); f(el, 'line-height', '1.2');
+    });
     // chips-stack: grid so align-content:start and align-items:start pack chips tightly
     q('#nba-calendar .nba-chips-stack').forEach(el => {
       f(el, 'display', 'grid');
