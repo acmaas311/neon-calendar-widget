@@ -195,10 +195,11 @@
 #nba-calendar .nba-chip-time  {
   display: block !important; font-size: 10px !important; font-weight: 700 !important; opacity: .88;
   letter-spacing: .02em; line-height: 1.2 !important; margin: 0 !important; color: #fff !important; padding: 0 !important;
+  white-space: nowrap !important; overflow: hidden !important;
 }
 #nba-calendar .nba-chip-title {
   display: block !important; font-size: 11px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
-  overflow: hidden; max-height: calc(1.3em * 2); padding: 0 !important; margin: 0 !important;
+  overflow: hidden !important; max-height: calc(1.3em * 2) !important; padding: 0 !important; margin: 0 !important;
 }
 
 /* ── Photo event card ────────────────────────────────────────────────────── */
@@ -300,8 +301,8 @@
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-wrap { margin: 0 !important; padding: 0 !important; display: block !important; flex-shrink: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 2) !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
@@ -482,8 +483,8 @@
         return `
           <div class="nba-event-wrap" style="display:block!important;margin:0!important;padding:0!important;flex-shrink:0!important">
             <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important">
-              <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important">${h(timeStr)}</span>
-              <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important">${h(e.name)}</span>
+              <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
+              <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 2)!important;overflow:hidden!important">${h(e.name)}</span>
             </a>
             ${ttHTML(e, flip)}
           </div>`;
@@ -666,10 +667,12 @@
     q('#nba-calendar .nba-chip-time').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.2'); f(el, 'min-height', '0');
+      f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
     });
     q('#nba-calendar .nba-chip-title').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
+      f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 2)');
     });
   }
 
