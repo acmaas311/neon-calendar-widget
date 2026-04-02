@@ -184,10 +184,10 @@
 #nba-calendar .nba-cal-cell.is-today .nba-day-num    { background: #1BA249; color: #fff; }
 
 /* ── Event chip (no photo) ───────────────────────────────────────────────── */
-#nba-calendar .nba-chips-stack { display: grid !important; grid-template-columns: 1fr !important; row-gap: 3px !important; align-content: start !important; margin: 0 !important; padding: 0 !important; }
-#nba-calendar .nba-event-wrap { position: relative; margin: 0 !important; padding: 0 !important; height: auto !important; }
+#nba-calendar .nba-chips-stack { display: grid !important; grid-template-columns: 1fr !important; row-gap: 3px !important; align-content: start !important; align-items: start !important; margin: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-event-chip {
   display: flex !important; flex-direction: column !important; gap: 2px !important;
+  position: relative !important; height: auto !important;
   background: #1BA249; color: #fff !important;
   cursor: pointer; padding: 5px 7px 6px !important; transition: background .15s; text-decoration: none !important; margin: 0 !important;
 }
@@ -234,7 +234,7 @@
   top: 0; left: calc(100% + 8px); display: none; margin: 0 !important;
 }
 #nba-calendar .nba-tooltip.flip { left: auto; right: calc(100% + 8px); }
-#nba-calendar .nba-event-wrap:hover  .nba-tooltip,
+#nba-calendar .nba-event-chip:hover  .nba-tooltip,
 #nba-calendar .nba-photo-wrap:hover  .nba-tooltip { display: block; }
 #nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 4px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
 #nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 3px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
@@ -299,8 +299,7 @@
 #nba-calendar:not(#nba-x) .nba-cal-head { display: grid !important; }
 #nba-calendar:not(#nba-x) .nba-cal-dow { display: block !important; padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-event-wrap { margin: 0 !important; padding: 0 !important; height: auto !important; display: block !important; flex-shrink: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
 #nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 2) !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
@@ -481,13 +480,11 @@
         }
 
         return `
-          <div class="nba-event-wrap" style="display:block!important;margin:0!important;padding:0!important;height:auto!important;flex-shrink:0!important">
-            <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important">
-              <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
-              <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 2)!important;overflow:hidden!important">${h(e.name)}</span>
-            </a>
+          <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
+            <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:10px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
+            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:11px!important;max-height:calc(1.3em * 2)!important;overflow:hidden!important">${h(e.name)}</span>
             ${ttHTML(e, flip)}
-          </div>`;
+          </a>`;
       }).join('');
 
       const moreHTML = overflow > 0
@@ -640,30 +637,26 @@
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
-    // chips-stack: fresh class the host has no rules for — grid stacks chips tightly
+    // chips-stack: grid so align-content:start and align-items:start pack chips tightly
     q('#nba-calendar .nba-chips-stack').forEach(el => {
       f(el, 'display', 'grid');
       f(el, 'grid-template-columns', '1fr');
       f(el, 'row-gap', '3px');
       f(el, 'align-content', 'start');
+      f(el, 'align-items', 'start');
       f(el, 'margin', '0');
       f(el, 'padding', '0');
     });
-    q('#nba-calendar .nba-event-wrap').forEach(el => {
-      f(el, 'display', 'block');
-      f(el, 'margin', '0');
-      f(el, 'padding', '0');
-      f(el, 'height', 'auto');
-      f(el, 'min-height', '0');
-    });
-    // Chip: flex column so gap controls spacing between time and title
+    // Chip is now direct grid item — enforce height:auto so host can't inflate it
     q('#nba-calendar .nba-event-chip').forEach(el => {
       f(el, 'display', 'flex');
       f(el, 'flex-direction', 'column');
       f(el, 'gap', '2px');
       f(el, 'padding', '5px 7px 6px');
       f(el, 'margin', '0');
+      f(el, 'height', 'auto');
       f(el, 'min-height', '0');
+      f(el, 'position', 'relative');
     });
     q('#nba-calendar .nba-chip-time').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
