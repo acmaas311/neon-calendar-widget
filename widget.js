@@ -75,7 +75,9 @@
   box-shadow: 0 2px 16px rgba(0,0,0,.12);
   width: 100%;
   overflow: hidden;
+  display: flex !important; flex-direction: column !important; gap: 0 !important;
 }
+#nba-calendar > * { margin-top: 0 !important; margin-bottom: 0 !important; }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
 #nba-calendar .nba-header {
@@ -109,7 +111,7 @@
 /* ── Filters bar ─────────────────────────────────────────────────────────── */
 #nba-calendar .nba-filters {
   background: #f0f7f2; border-bottom: 1px solid #d4e8da;
-  padding: 11px 24px !important; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 7px 16px !important; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   margin: 0 !important;
 }
 #nba-calendar .nba-search-wrap  { position: relative; display: flex; align-items: center; flex-shrink: 0; }
@@ -288,6 +290,8 @@
 /* ── High-specificity overrides (beat host CSS via :not(#nba-x) trick) ───── */
 /* Selectors here have specificity (2,0,0)+(class) = (2,1,0), higher than   */
 /* virtually any host selector, even with !important from same specificity.  */
+#nba-calendar:not(#nba-x) { display: flex !important; flex-direction: column !important; gap: 0 !important; }
+#nba-calendar:not(#nba-x) > * { margin-top: 0 !important; margin-bottom: 0 !important; }
 #nba-calendar:not(#nba-x) * { line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-header { padding: 8px 16px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-header-right { margin: 0 !important; padding: 0 !important; }
@@ -296,7 +300,7 @@
 #nba-calendar:not(#nba-x) .nba-month-label { margin: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-view-toggle { margin-left: 6px !important; }
 #nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-filters { padding: 11px 24px !important; margin: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-filters { padding: 7px 16px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-filter-chip { padding: 5px 13px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-cal-cell { display: grid !important; grid-template-columns: 1fr !important; align-content: start !important; row-gap: 3px !important; padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
 #nba-calendar:not(#nba-x) .nba-cal-body { display: grid !important; }
@@ -638,9 +642,20 @@
   function enforceMonthStyles() {
     const q = s => document.querySelectorAll(s);
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
+    // Kill any host-injected margins between widget sections
+    const cal = document.getElementById('nba-calendar');
+    if (cal) {
+      f(cal, 'display', 'flex'); f(cal, 'flex-direction', 'column'); f(cal, 'gap', '0');
+      Array.from(cal.children).forEach(c => {
+        f(c, 'margin-top', '0'); f(c, 'margin-bottom', '0');
+      });
+    }
     // Header — also set height:auto in case host has a fixed height rule
     q('#nba-calendar .nba-header').forEach(el => {
       f(el, 'padding', '8px 16px'); f(el, 'height', 'auto'); f(el, 'min-height', '0');
+    });
+    q('#nba-calendar .nba-filters').forEach(el => {
+      f(el, 'padding', '7px 16px'); f(el, 'margin', '0');
     });
     // chips-stack: grid so align-content:start and align-items:start pack chips tightly
     q('#nba-calendar .nba-chips-stack').forEach(el => {
