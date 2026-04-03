@@ -68,6 +68,33 @@ const CITY_TO_BOROUGH = {
   'woodside':          'Queens',
 };
 
+// Strip HTML tags and decode HTML entities that NeonCRM embeds in text fields.
+// Named entities not in this list are handled by the numeric fallback at the end.
+function cleanText(str) {
+  if (!str) return '';
+  return str
+    .replace(/<[^>]*>/g, ' ')          // strip all HTML tags
+    // Named entities — ordered so &amp; is decoded last to avoid double-decoding
+    .replace(/&nbsp;/g,   ' ')
+    .replace(/&rsquo;/g,  '\u2019')    // right single quote / apostrophe '
+    .replace(/&lsquo;/g,  '\u2018')    // left single quote '
+    .replace(/&rdquo;/g,  '\u201D')    // right double quote "
+    .replace(/&ldquo;/g,  '\u201C')    // left double quote "
+    .replace(/&ndash;/g,  '\u2013')    // en dash –
+    .replace(/&mdash;/g,  '\u2014')    // em dash —
+    .replace(/&hellip;/g, '\u2026')    // ellipsis …
+    .replace(/&lt;/g,     '<')
+    .replace(/&gt;/g,     '>')
+    .replace(/&quot;/g,   '"')
+    .replace(/&apos;/g,   "'")
+    .replace(/&amp;/g,    '&')         // must come after other & replacements
+    // Numeric entities — decimal &#123; and hex &#x7B;
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&#(\d+);/g,         (_, n) => String.fromCharCode(Number(n)))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export default async function handler(req, res) {
   // ── CORS ──────────────────────────────────────────────────────────────────
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -147,7 +174,6 @@ export default async function handler(req, res) {
 
       return {
         id:           e.id,
-        name:         e.name || 'Untitled Event',
         startDate:    e.startDate,          // "YYYY-MM-DD"
         startTime:    e.startTime || null,  // "HH:mm:ss" or null
         endDate:      e.endDate,
@@ -162,18 +188,9 @@ export default async function handler(req, res) {
                    || '',
         // Neon returns category as an array of strings e.g. ["Festivals"]
         category:     (Array.isArray(e.category) ? e.category[0] : e.category?.name) || '',
-        // Strip HTML tags and decode entities Neon embeds in summary/description
-        summary: ((e.summary || e.description || '')
-          .replace(/<[^>]*>/g, ' ')          // strip tags
-          .replace(/&nbsp;/g,  ' ')          // decode common entities
-          .replace(/&amp;/g,   '&')
-          .replace(/&lt;/g,    '<')
-          .replace(/&gt;/g,    '>')
-          .replace(/&quot;/g,  '"')
-          .replace(/&apos;/g,  "'")
-          .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(n))
-          .replace(/\s+/g, ' ')
-          .trim()),
+        // Strip HTML tags and decode all entities Neon may embed in text fields.
+        name:    cleanText(e.name || 'Untitled Event'),
+        summary: cleanText(e.summary || e.description || ''),
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,
         isFull,

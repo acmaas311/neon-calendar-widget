@@ -242,7 +242,7 @@
 #nba-calendar .nba-tooltip {
   position: absolute; z-index: 99999; background: #fff;
   border: 1.5px solid #d4e8da; box-shadow: 0 4px 20px rgba(0,0,0,.18);
-  padding: 12px !important; width: 230px; pointer-events: none;
+  padding: 8px !important; width: 230px; pointer-events: none;
   top: 0; left: calc(100% + 8px); display: none; margin: 0 !important;
 }
 #nba-calendar .nba-tooltip.flip { left: auto; right: calc(100% + 8px); }
@@ -251,15 +251,15 @@
 #nba-calendar .nba-list-event:hover  .nba-tooltip { display: block; }
 /* List-view tooltip drops below the row instead of floating to the side */
 #nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
-#nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 4px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 3px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
-#nba-calendar .nba-tt-location { font-size: 11px; color: #555; margin-bottom: 5px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
+#nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-location { font-size: 11px; color: #555; margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-desc     {
   font-size: 10.5px; color: #444; line-height: 1.4 !important;
-  border-top: 1px solid #e8f3ec; padding-top: 6px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 4px !important; margin-bottom: 0 !important;
+  border-top: 1px solid #e8f3ec; padding-top: 4px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 4px !important; margin-bottom: 0 !important;
   overflow: hidden;
 }
-#nba-calendar .nba-tt-tag      { display: inline-block; background: #f0f7f2; color: #15522B; padding: 2px 7px !important; font-size: 9.5px; font-weight: 700; margin-top: 5px !important; margin-right: 3px !important; margin-bottom: 0 !important; margin-left: 0 !important; line-height: 1 !important; }
+#nba-calendar .nba-tt-tag      { display: inline-block; background: #f0f7f2; color: #15522B; padding: 2px 7px !important; font-size: 9.5px; font-weight: 700; margin-top: 4px !important; margin-right: 3px !important; margin-bottom: 0 !important; margin-left: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tt-tag.paid { background: #fff3e0; color: #c0540a; }
 
 /* ── List view ───────────────────────────────────────────────────────────── */
@@ -382,6 +382,13 @@
     return `${DAYS_LONG[dt.getDay()]}, ${MONTHS[m-1]} ${d}`;
   }
 
+  // "April 23" — used in tooltip time row
+  function fmtShortDate(dateStr) {
+    if (!dateStr) return '';
+    const [, m, d] = dateStr.split('-').map(Number);
+    return `${MONTHS[m-1]} ${d}`;
+  }
+
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
     const { search, categories, boroughs } = state.filters;
@@ -432,8 +439,13 @@
   // ── Tooltip HTML ─────────────────────────────────────────────────────────────
   function ttHTML(e, flip) {
     const photo = e.imageUrl
-      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:100px;object-fit:cover;display:block!important;margin:0 0 8px 0!important;padding:0!important">`
+      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:90px;object-fit:cover;display:block!important;margin:0 0 6px 0!important;padding:0!important">`
       : '';
+    const timeRange  = fmtRange(e.startTime, e.endTime);
+    const dateLabel  = fmtShortDate(e.startDate);
+    const timeStr    = dateLabel && timeRange !== 'All Day'
+      ? `${dateLabel}, ${timeRange}`
+      : dateLabel || timeRange;
     const shortDesc = e.summary
       ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
@@ -442,7 +454,7 @@
     return `<div class="nba-tooltip${flip?' flip':''}">
       ${photo}
       <div class="nba-tt-title">${h(e.name)}</div>
-      <div class="nba-tt-time">${fmtRange(e.startTime, e.endTime)}</div>
+      <div class="nba-tt-time">${h(timeStr)}</div>
       ${desc}${cat ? `<div>${cat}</div>` : ''}
     </div>`;
   }
