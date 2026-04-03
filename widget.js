@@ -79,7 +79,7 @@
   background: #fff;
   box-shadow: 0 2px 16px rgba(0,0,0,.12);
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
   display: flex !important; flex-direction: column !important; gap: 0 !important;
 }
 #nba-calendar > * { margin-top: 0 !important; margin-bottom: 0 !important; }
@@ -437,25 +437,31 @@
   }
 
   // ── Tooltip HTML ─────────────────────────────────────────────────────────────
+  // All inner elements use inline styles so host-CSS specificity can never
+  // override spacing, regardless of how aggressively the site styles divs/spans.
   function ttHTML(e, flip) {
     const photo = e.imageUrl
-      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:90px;object-fit:cover;display:block!important;margin:0 0 6px 0!important;padding:0!important">`
+      ? `<img src="${h(e.imageUrl)}" alt="" style="width:100%;height:90px;object-fit:cover;display:block;margin:0 0 6px;padding:0">`
       : '';
-    const timeRange  = fmtRange(e.startTime, e.endTime);
-    const dateLabel  = fmtShortDate(e.startDate);
-    const timeStr    = dateLabel && timeRange !== 'All Day'
+    const timeRange = fmtRange(e.startTime, e.endTime);
+    const dateLabel = fmtShortDate(e.startDate);
+    const timeStr   = dateLabel && timeRange !== 'All Day'
       ? `${dateLabel}, ${timeRange}`
       : dateLabel || timeRange;
     const shortDesc = e.summary
       ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
-    const desc  = shortDesc ? `<div class="nba-tt-desc">${h(shortDesc)}</div>` : '';
-    const cat   = e.category  ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
-    return `<div class="nba-tooltip${flip?' flip':''}">
+    const desc = shortDesc
+      ? `<div style="font-size:10.5px;color:#444;line-height:1.45;border-top:1px solid #e8f3ec;padding:4px 0 0;margin:5px 0 0">${h(shortDesc)}</div>`
+      : '';
+    const cat = e.category
+      ? `<div style="margin:5px 0 0;padding:0"><span style="display:inline-block;background:#f0f7f2;color:#15522B;padding:2px 7px;font-size:9.5px;font-weight:700;line-height:1.2">${h(e.category)}</span></div>`
+      : '';
+    return `<div class="nba-tooltip${flip ? ' flip' : ''}" style="padding:8px">
       ${photo}
-      <div class="nba-tt-title">${h(e.name)}</div>
-      <div class="nba-tt-time">${h(timeStr)}</div>
-      ${desc}${cat ? `<div>${cat}</div>` : ''}
+      <div style="font-size:12px;font-weight:700;color:#15522B;line-height:1.35;margin:0 0 3px;padding:0">${h(e.name)}</div>
+      <div style="font-size:11px;font-weight:600;color:#018F99;line-height:1.2;margin:0;padding:0">${h(timeStr)}</div>
+      ${desc}${cat}
     </div>`;
   }
 

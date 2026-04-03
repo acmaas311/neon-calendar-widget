@@ -68,29 +68,47 @@ const CITY_TO_BOROUGH = {
   'woodside':          'Queens',
 };
 
-// Strip HTML tags and decode HTML entities that NeonCRM embeds in text fields.
-// Named entities not in this list are handled by the numeric fallback at the end.
+// Comprehensive HTML entity map — covers typography, Latin-1 accented characters,
+// and all common named entities NeonCRM may embed in event text.
+const HTML_ENTITIES = {
+  // Whitespace / typography
+  nbsp:'\u00A0', ensp:'\u2002', emsp:'\u2003', thinsp:'\u2009',
+  rsquo:'\u2019', lsquo:'\u2018', rdquo:'\u201D', ldquo:'\u201C',
+  sbquo:'\u201A', bdquo:'\u201E',
+  ndash:'\u2013', mdash:'\u2014', minus:'\u2212',
+  hellip:'\u2026', bull:'\u2022', middot:'\u00B7',
+  copy:'\u00A9', reg:'\u00AE', trade:'\u2122',
+  euro:'\u20AC', pound:'\u00A3', cent:'\u00A2', yen:'\u00A5',
+  lt:'<', gt:'>', quot:'"', apos:"'",
+  // Latin uppercase accented
+  Agrave:'À',Aacute:'Á',Acirc:'Â',Atilde:'Ã',Auml:'Ä',Aring:'Å',AElig:'Æ',
+  Ccedil:'Ç',
+  Egrave:'È',Eacute:'É',Ecirc:'Ê',Euml:'Ë',
+  Igrave:'Ì',Iacute:'Í',Icirc:'Î',Iuml:'Ï',
+  ETH:'Ð',Ntilde:'Ñ',
+  Ograve:'Ò',Oacute:'Ó',Ocirc:'Ô',Otilde:'Õ',Ouml:'Ö',Oslash:'Ø',
+  Ugrave:'Ù',Uacute:'Ú',Ucirc:'Û',Uuml:'Ü',
+  Yacute:'Ý',THORN:'Þ',szlig:'ß',
+  // Latin lowercase accented
+  agrave:'à',aacute:'á',acirc:'â',atilde:'ã',auml:'ä',aring:'å',aelig:'æ',
+  ccedil:'ç',
+  egrave:'è',eacute:'é',ecirc:'ê',euml:'ë',
+  igrave:'ì',iacute:'í',icirc:'î',iuml:'ï',
+  eth:'ð',ntilde:'ñ',
+  ograve:'ò',oacute:'ó',ocirc:'ô',otilde:'õ',ouml:'ö',oslash:'ø',
+  ugrave:'ù',uacute:'ú',ucirc:'û',uuml:'ü',
+  yacute:'ý',thorn:'þ',yuml:'ÿ',
+};
+
+// Strip HTML tags and decode all entities NeonCRM may embed in text fields.
 function cleanText(str) {
   if (!str) return '';
   return str
-    .replace(/<[^>]*>/g, ' ')          // strip all HTML tags
-    // Named entities — ordered so &amp; is decoded last to avoid double-decoding
-    .replace(/&nbsp;/g,   ' ')
-    .replace(/&rsquo;/g,  '\u2019')    // right single quote / apostrophe '
-    .replace(/&lsquo;/g,  '\u2018')    // left single quote '
-    .replace(/&rdquo;/g,  '\u201D')    // right double quote "
-    .replace(/&ldquo;/g,  '\u201C')    // left double quote "
-    .replace(/&ndash;/g,  '\u2013')    // en dash –
-    .replace(/&mdash;/g,  '\u2014')    // em dash —
-    .replace(/&hellip;/g, '\u2026')    // ellipsis …
-    .replace(/&lt;/g,     '<')
-    .replace(/&gt;/g,     '>')
-    .replace(/&quot;/g,   '"')
-    .replace(/&apos;/g,   "'")
-    .replace(/&amp;/g,    '&')         // must come after other & replacements
-    // Numeric entities — decimal &#123; and hex &#x7B;
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
-    .replace(/&#(\d+);/g,         (_, n) => String.fromCharCode(Number(n)))
+    .replace(/<[^>]*>/g, ' ')          // strip HTML tags
+    .replace(/&([a-zA-Z]+);/g, (m, name) => HTML_ENTITIES[name] ?? m)  // named entities
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16))) // hex numeric
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))               // decimal numeric
+    .replace(/&amp;/g, '&')            // must be last to avoid double-decoding
     .replace(/\s+/g, ' ')
     .trim();
 }
