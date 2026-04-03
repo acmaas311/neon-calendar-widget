@@ -79,7 +79,7 @@
   background: #fff;
   box-shadow: 0 2px 16px rgba(0,0,0,.12);
   width: 100%;
-  overflow: visible;
+  overflow: visible !important;
   display: flex !important; flex-direction: column !important; gap: 0 !important;
 }
 #nba-calendar > * { margin-top: 0 !important; margin-bottom: 0 !important; }
@@ -307,7 +307,7 @@
 /* ── High-specificity overrides (beat host CSS via :not(#nba-x) trick) ───── */
 /* Selectors here have specificity (2,0,0)+(class) = (2,1,0), higher than   */
 /* virtually any host selector, even with !important from same specificity.  */
-#nba-calendar:not(#nba-x) { display: flex !important; flex-direction: column !important; gap: 0 !important; }
+#nba-calendar:not(#nba-x) { display: flex !important; flex-direction: column !important; gap: 0 !important; overflow: visible !important; }
 #nba-calendar:not(#nba-x) > * { margin-top: 0 !important; margin-bottom: 0 !important; }
 #nba-calendar:not(#nba-x) * { line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-header { padding: 8px 16px !important; margin: 0 !important; }
@@ -452,15 +452,15 @@
       ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
     const desc = shortDesc
-      ? `<div style="font-size:10.5px;color:#444;line-height:1.45;border-top:1px solid #e8f3ec;padding:4px 0 0;margin:5px 0 0">${h(shortDesc)}</div>`
+      ? `<div style="font-size:10.5px!important;color:#444!important;line-height:1.45!important;border-top:1px solid #e8f3ec!important;padding:4px 0 0!important;margin:5px 0 0!important;overflow:hidden!important">${h(shortDesc)}</div>`
       : '';
     const cat = e.category
-      ? `<div style="margin:5px 0 0;padding:0"><span style="display:inline-block;background:#f0f7f2;color:#15522B;padding:2px 7px;font-size:9.5px;font-weight:700;line-height:1.2">${h(e.category)}</span></div>`
+      ? `<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">${h(e.category)}</span></div>`
       : '';
-    return `<div class="nba-tooltip${flip ? ' flip' : ''}" style="padding:8px">
+    return `<div class="nba-tooltip${flip ? ' flip' : ''}" style="padding:8px!important">
       ${photo}
-      <div style="font-size:12px;font-weight:700;color:#15522B;line-height:1.35;margin:0 0 3px;padding:0">${h(e.name)}</div>
-      <div style="font-size:11px;font-weight:600;color:#018F99;line-height:1.2;margin:0;padding:0">${h(timeStr)}</div>
+      <div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">${h(e.name)}</div>
+      <div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">${h(timeStr)}</div>
       ${desc}${cat}
     </div>`;
   }
@@ -701,6 +701,7 @@
     const cal = document.getElementById('nba-calendar');
     if (cal) {
       f(cal, 'display', 'flex'); f(cal, 'flex-direction', 'column'); f(cal, 'gap', '0');
+      f(cal, 'overflow', 'visible');
       Array.from(cal.children).forEach(c => {
         f(c, 'margin-top', '0'); f(c, 'margin-bottom', '0');
       });
