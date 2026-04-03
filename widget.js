@@ -216,20 +216,8 @@
   overflow: hidden !important; max-height: calc(1.3em * 4) !important; padding: 0 !important; margin: 0 !important;
 }
 /* ── Photo event card ────────────────────────────────────────────────────── */
-#nba-calendar .nba-photo-wrap {
-  position: relative; margin-bottom: 3px !important; margin-top: 0 !important;
-  border: 1.5px solid #d4e8da; cursor: pointer;
-  transition: box-shadow .15s, border-color .15s; overflow: hidden;
-}
-#nba-calendar .nba-photo-wrap:hover { box-shadow: 0 2px 8px rgba(21,82,43,.20); border-color: #1BA249; }
-#nba-calendar .nba-photo-wrap a { display: block; text-decoration: none !important; margin: 0 !important; padding: 0 !important; }
-#nba-calendar .nba-photo-img  { width: 100%; height: 52px; object-fit: cover; display: block; margin: 0 !important; padding: 0 !important; }
-#nba-calendar .nba-photo-info { padding: 5px 7px 6px !important; background: #fff; margin: 0 !important; }
-#nba-calendar .nba-photo-time { display: block !important; font-size: 9px !important; font-weight: 700 !important; color: #15522B !important; line-height: 1.2 !important; margin-bottom: 2px !important; margin-top: 0 !important; padding: 0 !important; }
-#nba-calendar .nba-photo-name {
-  display: block !important; font-size: 10px !important; font-weight: 600 !important; color: #222 !important; line-height: 1.3 !important;
-  overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; padding: 0 !important; margin: 0 !important;
-}
+#nba-calendar .nba-photo-wrap { position: relative; margin: 0 !important; cursor: pointer; overflow: hidden; transition: opacity .15s; }
+#nba-calendar .nba-photo-wrap:hover { opacity: .88; }
 /* ── "+ N more" button ───────────────────────────────────────────────────── */
 #nba-calendar .nba-more-btn {
   display: block; font-size: 10px; font-weight: 600; color: #018F99; cursor: pointer;
@@ -327,10 +315,7 @@
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 10px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
 #nba-calendar:not(#nba-x) .nba-chip-title { font-size: 11px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
-#nba-calendar:not(#nba-x) .nba-photo-wrap { margin-bottom: 3px !important; margin-top: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-photo-info { padding: 5px 7px 6px !important; margin: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-photo-time { line-height: 1.2 !important; margin: 0 0 2px 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-photo-name { line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-photo-wrap { margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { position: relative !important; }
 #nba-calendar:not(#nba-x) .nba-list { display: block !important; padding: 16px 24px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-group { display: block !important; margin-bottom: 12px !important; margin-top: 0 !important; padding: 0 !important; }
@@ -515,18 +500,20 @@
         const timeStr = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
 
         if (e.imageUrl) {
-          return `
-            <div class="nba-photo-wrap">
-              <a href="${h(e.url)}" target="_blank" rel="noopener">
-                <img class="nba-photo-img" src="${h(e.imageUrl)}" alt="" loading="lazy"
-                     onerror="this.style.display='none'">
-                <div class="nba-photo-info">
-                  <span class="nba-photo-time">${h(timeStr)}</span>
-                  <span class="nba-photo-name">${h(e.name)}</span>
-                </div>
-              </a>
-              ${ttHTML(e, flip)}
-            </div>`;
+          // String concatenation avoids whitespace text nodes (same fix as tooltip).
+          // Full inline !important styles so host CSS cannot override.
+          // Square image via aspect-ratio:1/1; green chip aesthetic throughout.
+          return '<a href="' + h(e.url) + '" target="_blank" rel="noopener" class="nba-photo-wrap"'
+            + ' style="display:block!important;position:relative!important;background:#1BA249!important;cursor:pointer!important;overflow:hidden!important;text-decoration:none!important;margin:0!important;padding:0!important">'
+            + '<img src="' + h(e.imageUrl) + '" alt="" loading="lazy"'
+            + ' style="width:100%!important;aspect-ratio:1/1!important;object-fit:cover!important;display:block!important;margin:0!important;padding:0!important"'
+            + ' onerror="this.style.display=\'none\'">'
+            + '<div style="padding:5px 7px 6px!important;margin:0!important;background:#1BA249!important">'
+            + '<span style="display:block!important;font-size:10px!important;font-weight:700!important;color:#fff!important;line-height:1.2!important;margin:0 0 2px 0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important">' + h(timeStr) + '</span>'
+            + '<span style="display:block!important;font-size:11px!important;font-weight:600!important;color:#fff!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;max-height:calc(1.3em * 3)!important">' + h(e.name) + '</span>'
+            + '</div>'
+            + ttHTML(e, flip)
+            + '</a>';
         }
 
         return `
@@ -591,7 +578,7 @@
 
       const rows = groups[date].map(e => {
         const img  = e.imageUrl
-          ? `<img class="nba-list-img" src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+          ? `<img src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:80px!important;height:80px!important;object-fit:cover!important;flex-shrink:0!important;display:block!important;margin:0 12px 0 0!important;padding:0!important">`
           : '';
         const time = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
         const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(e.category)}</span>` : '';
