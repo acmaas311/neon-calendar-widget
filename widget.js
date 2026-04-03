@@ -286,6 +286,23 @@
 #nba-calendar .nba-tag-cat   { background: #f0f7f2; color: #15522B; }
 #nba-calendar .nba-list-empty { padding: 40px 0 !important; text-align: center; font-size: 13px; color: #999; margin: 0 !important; }
 
+/* ── List-view bottom nav ─────────────────────────────────────────────── */
+#nba-calendar .nba-list-nav {
+  display: flex !important; align-items: center; justify-content: space-between;
+  border-top: 1px solid #d4e8da; padding: 10px 0 0 !important; margin-top: 8px !important;
+}
+#nba-calendar .nba-list-nav-label {
+  font-size: 13px; font-weight: 700; color: #15522B; margin: 0 !important; padding: 0 !important; line-height: 1 !important;
+}
+#nba-calendar .nba-list-nav-btn {
+  background: #15522B; color: #fff; border: none;
+  padding: 7px 16px !important; font-family: 'Montserrat', sans-serif !important;
+  font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: .04em;
+  transition: background .15s; line-height: 1 !important; margin: 0 !important;
+  display: flex; align-items: center; gap: 6px;
+}
+#nba-calendar .nba-list-nav-btn:hover { background: #1BA249; }
+
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 #nba-calendar .nba-footer { background: #f0f7f2; border-top: 1px solid #d4e8da; padding: 8px 24px !important; display: flex; justify-content: flex-end; margin: 0 !important; }
 #nba-calendar .nba-footer a { font-size: 10px; color: #15522B; text-decoration: none; font-weight: 600; opacity: .65; }
@@ -525,9 +542,24 @@
 
   // ── List view builder ────────────────────────────────────────────────────────
   function buildList() {
+    const { year, month } = state;
     const filtered = getFiltered();
+
+    // Prev / next month labels for the bottom nav
+    const prevDate  = new Date(year, month - 1, 1);
+    const nextDate  = new Date(year, month + 1, 1);
+    const prevLabel = `‹ ${MONTHS[prevDate.getMonth()]} ${prevDate.getFullYear()}`;
+    const nextLabel = `${MONTHS[nextDate.getMonth()]} ${nextDate.getFullYear()} ›`;
+
+    const bottomNav = `
+      <div class="nba-list-nav">
+        <button class="nba-list-nav-btn" id="nba-list-prev-btn">${prevLabel}</button>
+        <span class="nba-list-nav-label">${MONTHS[month]} ${year}</span>
+        <button class="nba-list-nav-btn" id="nba-list-next-btn">${nextLabel}</button>
+      </div>`;
+
     if (!filtered.length) {
-      return `<div class="nba-list"><div class="nba-list-empty">No events found for this period.</div></div>`;
+      return `<div class="nba-list"><div class="nba-list-empty">No events found for this period.</div>${bottomNav}</div>`;
     }
 
     const groups  = {};
@@ -566,7 +598,7 @@
       </div>`;
     }).join('');
 
-    return `<div class="nba-list">${html}</div>`;
+    return `<div class="nba-list">${html}${bottomNav}</div>`;
   }
 
   // ── Filter bar builder ───────────────────────────────────────────────────────
@@ -765,6 +797,16 @@
       state.filters.search = '';
       render();
       document.getElementById('nba-search-input')?.focus();
+    });
+
+    // List-view bottom nav — prev / next month
+    el.querySelector('#nba-list-prev-btn')?.addEventListener('click', () => {
+      if (--state.month < 0) { state.month = 11; state.year--; }
+      loadMonth();
+    });
+    el.querySelector('#nba-list-next-btn')?.addEventListener('click', () => {
+      if (++state.month > 11) { state.month = 0; state.year++; }
+      loadMonth();
     });
 
     // "+ N more" → switch to list view
