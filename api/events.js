@@ -184,8 +184,8 @@ export default async function handler(req, res) {
       };
     });
 
-    // ── Cache for 5 minutes on Vercel edge ────────────────────────────────
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+    // ── Cache for 30 minutes on Vercel edge ───────────────────────────────
+    res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
 
     return res.status(200).json({
       events,

@@ -820,6 +820,36 @@
   }
 
   // ── Data loading ─────────────────────────────────────────────────────────────
+
+  // Fetch all pages for a given date range in parallel and return the full
+  // event array. Throws on network/HTTP errors for the first page; subsequent
+  // page failures are swallowed so a partial result is still returned.
+  async function fetchAllPages(startDate, endDate) {
+    const res = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=200`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    let events = data.events || [];
+    const total    = data.pagination?.totalResults ?? events.length;
+    const size     = data.pagination?.pageSize      ?? 200;
+    const maxPages = Math.ceil(total / size);
+
+    if (maxPages > 1) {
+      // Fire all remaining page requests in parallel — much faster than sequential.
+      const pageNums = Array.from({ length: maxPages - 1 }, (_, i) => i + 2);
+      const pages = await Promise.all(
+        pageNums.map(pg =>
+          fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${pg}`)
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
+        )
+      );
+      pages.forEach(pd => { if (pd) events = events.concat(pd.events || []); });
+    }
+
+    return events;
+  }
+
   async function loadMonth() {
     const { year, month } = state;
     const key       = `${year}-${String(month+1).padStart(2,'0')}`;
@@ -830,6 +860,8 @@
     if (state._cache[key]) {
       state.events = state._cache[key];
       render();
+      // Still kick off adjacent pre-fetches in case they aren't cached yet.
+      prefetchAdjacentMonths(year, month);
       return;
     }
 
@@ -838,25 +870,7 @@
     render();
 
     try {
-      const res  = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=200`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      let events = data.events || [];
-
-      // Handle Neon pagination sequentially to avoid rate-limiting.
-      // Neon ignores date filters and returns all events sorted oldest-first,
-      // so current-month events can be on the last page. Fetch sequentially
-      // (not in parallel) to stay under Neon's rate limit; stop on any error.
-      const total = data.pagination?.totalResults ?? events.length;
-      const size  = data.pagination?.pageSize      ?? 200;
-      const maxPages = Math.ceil(total / size);
-      for (let pg = 2; pg <= maxPages; pg++) {
-        const pr = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${pg}`);
-        if (!pr.ok) break; // stop gracefully on 429 or other error
-        const pd = await pr.json();
-        events = events.concat(pd.events || []);
-      }
+      let events = await fetchAllPages(startDate, endDate);
 
       // ── Client-side date guard ─────────────────────────────────────────────
       // Some Neon orgs return all events regardless of date params; filter here
@@ -867,7 +881,6 @@
       state.events      = events;
       state.error       = null;
 
-
     } catch (err) {
       state.error  = err.message;
       state.events = [];
@@ -875,6 +888,29 @@
       state.loading = false;
       render();
     }
+
+    // Pre-fetch neighbours silently so navigating feels instant.
+    prefetchAdjacentMonths(year, month);
+  }
+
+  // Silently populate the cache for the months immediately before and after
+  // the given month. Errors are swallowed — this is best-effort only.
+  function prefetchAdjacentMonths(year, month) {
+    [
+      month === 0  ? [year - 1, 11] : [year, month - 1],
+      month === 11 ? [year + 1, 0]  : [year, month + 1],
+    ].forEach(([y, m]) => {
+      const key   = `${y}-${String(m+1).padStart(2,'0')}`;
+      if (state._cache[key]) return; // already have it
+      const start = `${key}-01`;
+      const last  = new Date(y, m+1, 0).getDate();
+      const end   = `${key}-${last}`;
+      fetchAllPages(start, end)
+        .then(evts => {
+          state._cache[key] = evts.filter(e => e.startDate >= start && e.startDate <= end);
+        })
+        .catch(() => {}); // silent fail
+    });
   }
 
   // ── Responsive: auto-switch to list view when widget is too narrow ───────────
