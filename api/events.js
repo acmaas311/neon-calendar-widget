@@ -209,7 +209,8 @@ export default async function handler(req, res) {
         // Strip HTML tags and decode all entities Neon may embed in text fields.
         name:    cleanText(e.name || 'Untitled Event'),
         summary: cleanText(e.summary || e.description || ''),
-        imageUrl:     e.eventImage?.imageUrl  || null,
+        imageUrl:     e.eventImage?.imageUrl || e.eventImage?.url || e.image?.url || e.image?.imageUrl || e.thumbnail || e.thumbnailUrl || null,
+        _imageDebug:  JSON.stringify({ eventImage: e.eventImage, image: e.image, thumbnail: e.thumbnail, thumbnailUrl: e.thumbnailUrl, photo: e.photo }),
         isFree,
         isFull,
         // Borough derived from addressCity
