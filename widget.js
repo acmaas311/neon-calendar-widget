@@ -32,7 +32,8 @@
   // arrays are hidden from the widget entirely.
   const CATEGORY_CONFIG = [
     { label: 'Festivals',                neonCats: ['Festivals'] },
-    { label: 'Outings & Classes',        neonCats: ['Free and Partner Walks', 'Local Trips'] },
+    { label: 'Free & Partner Outings',   neonCats: ['Free and Partner Walks'] },
+    { label: 'Paid Outings and Classes', neonCats: ['Local Trips'] },
     { label: 'Member Events',            neonCats: ['In-person Members-only Events'] },
     { label: 'Lectures',                 neonCats: ['Lectures'] },
     { label: 'Volunteer Opportunities',  neonCats: ['Virtual Community Science Orientations'] },
@@ -40,6 +41,12 @@
 
   // Flat set of every Neon category name that is allowed to appear
   const ALLOWED_CATS = new Set(CATEGORY_CONFIG.flatMap(c => c.neonCats));
+
+  // Maps NeonCRM category names to friendlier display labels shown on tags.
+  // Only entries that differ from the raw NeonCRM name need to be listed here.
+  const CATEGORY_DISPLAY = {
+    'Free and Partner Walks': 'Free and Partner Outings',
+  };
 
   // ── State ───────────────────────────────────────────────────────────────────
   const now = new Date();
@@ -436,8 +443,9 @@
     const desc = shortDesc
       ? '<div style="font-size:10.5px!important;color:#444!important;line-height:1.45!important;border-top:1px solid #e8f3ec!important;padding:4px 0 0!important;margin:5px 0 0!important;overflow:hidden!important">' + h(shortDesc) + '</div>'
       : '';
+    const catLabel = CATEGORY_DISPLAY[e.category] || e.category;
     const cat = e.category
-      ? '<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">' + h(e.category) + '</span></div>'
+      ? '<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">' + h(catLabel) + '</span></div>'
       : '';
 
     // NO whitespace between child elements — newlines/spaces between block-level
@@ -561,7 +569,7 @@
           ? `<img src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:80px!important;height:80px!important;object-fit:cover!important;flex-shrink:0!important;display:block!important;margin:0 12px 0 0!important;padding:0!important">`
           : '';
         const time = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
-        const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(e.category)}</span>` : '';
+        const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(CATEGORY_DISPLAY[e.category] || e.category)}</span>` : '';
 
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener"
