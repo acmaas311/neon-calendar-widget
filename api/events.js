@@ -69,16 +69,10 @@ export default async function handler(req, res) {
 
     // ── Transform ──────────────────────────────────────────────────────────
     const events = (data.events || []).map(e => {
-      // Determine if the event has any paid registration sessions
-      const sessions = e.registrationInfo?.registrationSessions ?? [];
-      const isFree   = sessions.length === 0 || sessions.every(s => !s.fee || s.fee === 0);
-      // TEMP DEBUG — expose raw fee-related fields so we can find the right path
-      const _feeDebug = {
-        fee: e.fee, feeAmount: e.feeAmount, eventFee: e.eventFee,
-        registrationInfo: e.registrationInfo,
-        enableEventRegistrationForm: e.enableEventRegistrationForm,
-        financialSystem: e.financialSystem,
-      };
+      // NeonCRM v2 list API does not return fee/registrationSessions data.
+      // Best available proxy: enableEventRegistrationForm === true means the
+      // event has a registration form and is likely paid; false = free/walk-in.
+      const isFree = !e.enableEventRegistrationForm;
 
       // Registration capacity — Neon provides maximumAttendees and
       // registrationInfo.registrationCount (current registered count)
@@ -120,7 +114,6 @@ export default async function handler(req, res) {
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,
         isFull,
-        _feeDebug,   // TEMP — remove after identifying correct field
         // Deep link to the NeonCRM public event page
         url: `https://${orgId}.app.neoncrm.com/np/clients/${orgId}/event.jsp?event=${e.id}`,
       };
