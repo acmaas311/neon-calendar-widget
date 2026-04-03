@@ -28,10 +28,11 @@
   // stored in NeonCRM. Events whose category doesn't appear in any of these
   // arrays are hidden from the widget entirely.
   const CATEGORY_CONFIG = [
-    { label: 'Festivals',               neonCats: ['Festivals'] },
+    { label: 'Festivals',                neonCats: ['Festivals'] },
     { label: 'Outings & Classes',        neonCats: ['Free and Partner Walks', 'Local Trips'] },
-    { label: 'Member Events',           neonCats: ['In-person Members-only Events'] },
-    { label: 'Lectures',                neonCats: ['Lectures'] },
+    { label: 'Member Events',            neonCats: ['In-person Members-only Events'] },
+    { label: 'Lectures',                 neonCats: ['Lectures'] },
+    { label: 'Volunteer Opportunities',  neonCats: ['Virtual Community Science Orientations'] },
   ];
 
   // Flat set of every Neon category name that is allowed to appear
