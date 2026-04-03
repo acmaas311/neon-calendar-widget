@@ -457,12 +457,16 @@
     const cat = e.category
       ? `<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">${h(e.category)}</span></div>`
       : '';
-    return `<div class="nba-tooltip${flip ? ' flip' : ''}" style="padding:8px!important">
-      ${photo}
-      <div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">${h(e.name)}</div>
-      <div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">${h(timeStr)}</div>
-      ${desc}${cat}
-    </div>`;
+    // NO whitespace between child elements — newlines/spaces between block-level
+    // siblings create anonymous inline boxes that inherit the host's large
+    // line-height, producing ~38px invisible gaps between each element.
+    return '<div class="nba-tooltip' + (flip ? ' flip' : '') + '" style="padding:8px!important">'
+      + photo
+      + '<div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
+      + '<div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
+      + desc
+      + cat
+      + '</div>';
   }
 
   // ── Month view builder ───────────────────────────────────────────────────────
