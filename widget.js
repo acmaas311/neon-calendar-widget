@@ -23,6 +23,9 @@
   const DAYS_LONG  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const MAX_PER_CELL = 3;
 
+  // ── Borough filter order ─────────────────────────────────────────────────
+  const BOROUGH_ORDER = ['Manhattan', 'Brooklyn', 'Bronx', 'Queens', 'Staten Island'];
+
   // ── Category configuration ───────────────────────────────────────────────
   // Maps the filter chip labels shown in the UI to the exact category names
   // stored in NeonCRM. Events whose category doesn't appear in any of these
@@ -48,7 +51,8 @@
     loading: false,
     error:   null,
     // filters.categories holds active chip *labels* from CATEGORY_CONFIG
-    filters: { categories: [], search: '' },
+    // filters.boroughs holds active borough names (multi-select; empty = all)
+    filters: { categories: [], boroughs: [], search: '' },
     _autoList: false,
     _cache:  {},
     _searchTimer: null,
@@ -368,7 +372,7 @@
 
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
-    const { search, categories } = state.filters;
+    const { search, categories, boroughs } = state.filters;
 
     // Build the set of allowed Neon category names based on active chip labels.
     // If no chips are selected, all ALLOWED_CATS are shown.
@@ -394,14 +398,20 @@
         if (!e.category || !activeCats.has(e.category)) return false;
       }
 
-      // 3. Search
+      // 3. Borough filter — when any boroughs are selected:
+      //    - Events with no borough (e.borough === '') are hidden
+      //    - Events whose borough is not in the selection are hidden
+      if (boroughs.length > 0) {
+        if (!e.borough || !boroughs.includes(e.borough)) return false;
+      }
+
+      // 4. Search
       if (search) {
         const q = search.toLowerCase();
         if (!(e.name || '').toLowerCase().includes(q) &&
             !(e.locationName || '').toLowerCase().includes(q) &&
             !(e.summary || '').toLowerCase().includes(q)) return false;
       }
-
 
       return true;
     });
@@ -569,10 +579,26 @@
       return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="cat" data-value="${h(label)}">${h(label)}</button>`;
     }).join('');
 
+    // Borough chips — derived from events that have a recognised borough
+    const boroughsInData = new Set(state.events.map(e => e.borough).filter(Boolean));
+    const boroughChips = BOROUGH_ORDER
+      .filter(b => boroughsInData.has(b))
+      .map(b => {
+        const on = filters.boroughs.length === 0 || filters.boroughs.includes(b);
+        return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="borough" data-value="${h(b)}">${h(b)}</button>`;
+      }).join('');
+
+    const boroughSection = boroughChips
+      ? `<div class="nba-filter-divider"></div>
+         <span class="nba-filter-label">Borough</span>
+         <div class="nba-filter-group">${boroughChips}</div>`
+      : '';
+
     return `
       <div class="nba-filters">
         <span class="nba-filter-label">Category</span>
         <div class="nba-filter-group">${catChips}</div>
+        ${boroughSection}
       </div>`;
   }
 
@@ -706,11 +732,11 @@
       b.addEventListener('click', () => { state.view = b.dataset.view; state._autoList = false; render(); })
     );
 
-    // Filter chips
+    // Filter chips (category and borough share the same chip style)
     el.querySelectorAll('.nba-filter-chip[data-filter]').forEach(b =>
       b.addEventListener('click', () => {
-        const { value } = b.dataset;
-        const arr = state.filters.categories;
+        const { filter, value } = b.dataset;
+        const arr = filter === 'borough' ? state.filters.boroughs : state.filters.categories;
         const i   = arr.indexOf(value);
         i === -1 ? arr.push(value) : arr.splice(i, 1);
         render();

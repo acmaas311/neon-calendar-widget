@@ -5,6 +5,69 @@
 //   NEON_ORG_ID  — your NeonCRM org subdomain, e.g. "nycbirdalliance"
 //   NEON_API_KEY — your NeonCRM API key
 
+// Maps addressCity values (lowercased) to a NYC borough label.
+// Anything not listed here gets an empty string (no borough / outside NYC).
+const CITY_TO_BOROUGH = {
+  // Manhattan
+  'new york':          'Manhattan',
+  'manhattan':         'Manhattan',
+  'new york city':     'Manhattan',
+  'nyc':               'Manhattan',
+  // Brooklyn
+  'brooklyn':          'Brooklyn',
+  // Bronx
+  'bronx':             'Bronx',
+  'the bronx':         'Bronx',
+  // Staten Island
+  'staten island':     'Staten Island',
+  // Queens neighborhoods
+  'astoria':           'Queens',
+  'bayside':           'Queens',
+  'bellerose':         'Queens',
+  'briarwood':         'Queens',
+  'college point':     'Queens',
+  'corona':            'Queens',
+  'east elmhurst':     'Queens',
+  'east rockaway':     'Queens',
+  'elmhurst':          'Queens',
+  'far rockaway':      'Queens',
+  'floral park':       'Queens',
+  'flushing':          'Queens',
+  'forest hills':      'Queens',
+  'fresh meadows':     'Queens',
+  'glen oaks':         'Queens',
+  'glendale':          'Queens',
+  'hollis':            'Queens',
+  'howard beach':      'Queens',
+  'jackson heights':   'Queens',
+  'jamaica':           'Queens',
+  'jamaica hills':     'Queens',
+  'kew gardens':       'Queens',
+  'kew gardens hills': 'Queens',
+  'laurelton':         'Queens',
+  'little neck':       'Queens',
+  'long island city':  'Queens',
+  'maspeth':           'Queens',
+  'middle village':    'Queens',
+  'ozone park':        'Queens',
+  'queens':            'Queens',
+  'queens village':    'Queens',
+  'rego park':         'Queens',
+  'richmond hill':     'Queens',
+  'ridgewood':         'Queens',
+  'rockaway beach':    'Queens',
+  'rockaway park':     'Queens',
+  'rosedale':          'Queens',
+  'saint albans':      'Queens',
+  'south jamaica':     'Queens',
+  'south ozone park':  'Queens',
+  'springfield gardens':'Queens',
+  'sunnyside':         'Queens',
+  'whitestone':        'Queens',
+  'woodhaven':         'Queens',
+  'woodside':          'Queens',
+};
+
 export default async function handler(req, res) {
   // ── CORS ──────────────────────────────────────────────────────────────────
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -114,6 +177,8 @@ export default async function handler(req, res) {
         imageUrl:     e.eventImage?.imageUrl  || null,
         isFree,
         isFull,
+        // Borough derived from addressCity
+        borough: CITY_TO_BOROUGH[(e.addressCity || '').toLowerCase().trim()] || '',
         // Deep link to the NeonCRM public event page
         url: `https://${orgId}.app.neoncrm.com/np/clients/${orgId}/event.jsp?event=${e.id}`,
       };
