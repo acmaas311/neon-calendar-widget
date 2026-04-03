@@ -48,7 +48,7 @@
     loading: false,
     error:   null,
     // filters.categories holds active chip *labels* from CATEGORY_CONFIG
-    filters: { categories: [], price: [], search: '' },
+    filters: { categories: [], search: '' },
     _autoList: false,
     _cache:  {},
     _searchTimer: null,
@@ -280,7 +280,6 @@
 #nba-calendar .nba-list-tags { display: flex; gap: 4px; flex-wrap: wrap; }
 #nba-calendar .nba-tag       { display: inline-block; padding: 2px 8px !important; font-size: 9.5px; font-weight: 700; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tag-cat   { background: #f0f7f2; color: #15522B; }
-#nba-calendar .nba-tag-paid  { background: #fff3e0; color: #c0540a; }
 #nba-calendar .nba-list-empty { padding: 40px 0 !important; text-align: center; font-size: 13px; color: #999; margin: 0 !important; }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
@@ -369,7 +368,7 @@
 
   // ── Filtering ────────────────────────────────────────────────────────────────
   function getFiltered() {
-    const { search, categories, price } = state.filters;
+    const { search, categories } = state.filters;
 
     // Build the set of allowed Neon category names based on active chip labels.
     // If no chips are selected, all ALLOWED_CATS are shown.
@@ -403,11 +402,6 @@
             !(e.summary || '').toLowerCase().includes(q)) return false;
       }
 
-      // 4. Price
-      if (price.length === 1) {
-        if (price[0] === 'free' && !e.isFree) return false;
-        if (price[0] === 'paid' &&  e.isFree) return false;
-      }
 
       return true;
     });
@@ -423,12 +417,11 @@
       : '';
     const desc  = shortDesc ? `<div class="nba-tt-desc">${h(shortDesc)}</div>` : '';
     const cat   = e.category  ? `<span class="nba-tt-tag">${h(e.category)}</span>` : '';
-    const price = !e.isFree   ? `<span class="nba-tt-tag paid">Paid</span>` : '';
     return `<div class="nba-tooltip${flip?' flip':''}">
       ${photo}
       <div class="nba-tt-title">${h(e.name)}</div>
       <div class="nba-tt-time">${fmtRange(e.startTime, e.endTime)}</div>
-      ${desc}<div>${cat}${price}</div>
+      ${desc}${cat ? `<div>${cat}</div>` : ''}
     </div>`;
   }
 
@@ -543,7 +536,6 @@
           : '';
         const time = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
         const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(e.category)}</span>` : '';
-        const prc  = !e.isFree  ? `<span class="nba-tag nba-tag-paid">Paid</span>` : '';
 
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener"
@@ -552,7 +544,7 @@
             <div class="nba-list-body" style="display:grid!important;row-gap:3px!important;align-content:start!important;margin:0!important;padding:0!important;flex:1;min-width:0">
               <div class="nba-list-name" style="margin:0!important;padding:0!important;line-height:1.3!important">${h(e.name)}</div>
               <div class="nba-list-time" style="margin:0!important;padding:0!important;line-height:1.2!important">${h(time)}</div>
-              <div class="nba-list-tags" style="margin:0!important;padding:0!important">${cat}${prc}</div>
+              ${cat ? `<div class="nba-list-tags" style="margin:0!important;padding:0!important">${cat}</div>` : ''}
             </div>
             ${ttHTML(e, false)}
           </a>`;
@@ -577,19 +569,10 @@
       return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="cat" data-value="${h(label)}">${h(label)}</button>`;
     }).join('');
 
-    const freeOn   = filters.price.length === 0 || filters.price.includes('free');
-    const paidOn   = filters.price.length === 0 || filters.price.includes('paid');
-
     return `
       <div class="nba-filters">
         <span class="nba-filter-label">Category</span>
         <div class="nba-filter-group">${catChips}</div>
-        <div class="nba-filter-divider"></div>
-        <span class="nba-filter-label">Price</span>
-        <div class="nba-filter-group">
-          <button class="nba-filter-chip${freeOn ? ' active' : ''}" data-filter="price" data-value="free">Free</button>
-          <button class="nba-filter-chip${paidOn ? ' active' : ''}" data-filter="price" data-value="paid">Paid</button>
-        </div>
       </div>`;
   }
 
@@ -726,8 +709,8 @@
     // Filter chips
     el.querySelectorAll('.nba-filter-chip[data-filter]').forEach(b =>
       b.addEventListener('click', () => {
-        const { filter, value } = b.dataset;
-        const arr = filter === 'cat' ? state.filters.categories : state.filters.price;
+        const { value } = b.dataset;
+        const arr = state.filters.categories;
         const i   = arr.indexOf(value);
         i === -1 ? arr.push(value) : arr.splice(i, 1);
         render();
