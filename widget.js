@@ -303,10 +303,6 @@
 }
 #nba-calendar .nba-list-nav-btn:hover { background: #1BA249; }
 
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-#nba-calendar .nba-footer { background: #f0f7f2; border-top: 1px solid #d4e8da; padding: 8px 24px !important; display: flex; justify-content: flex-end; margin: 0 !important; }
-#nba-calendar .nba-footer a { font-size: 10px; color: #15522B; text-decoration: none; font-weight: 600; opacity: .65; }
-#nba-calendar .nba-footer a:hover { opacity: 1; }
 
 /* ── High-specificity overrides (beat host CSS via :not(#nba-x) trick) ───── */
 /* Selectors here have specificity (2,0,0)+(class) = (2,1,0), higher than   */
@@ -345,7 +341,6 @@
 #nba-calendar:not(#nba-x) .nba-list-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-tag { padding: 2px 8px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-list-tags { margin: 0 !important; padding: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-footer { padding: 8px 24px !important; margin: 0 !important; }
     `;
     document.head.appendChild(style);
   }
@@ -620,18 +615,19 @@
         return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="borough" data-value="${h(b)}">${h(b)}</button>`;
       }).join('');
 
-    const boroughSection = boroughChips
-      ? `<div class="nba-filter-divider"></div>
-         <span class="nba-filter-label">Borough</span>
-         <div class="nba-filter-group">${boroughChips}</div>`
+    const boroughRow = boroughChips
+      ? `<div class="nba-filters nba-filters-borough">
+           <span class="nba-filter-label">Borough</span>
+           <div class="nba-filter-group">${boroughChips}</div>
+         </div>`
       : '';
 
     return `
       <div class="nba-filters">
         <span class="nba-filter-label">Category</span>
         <div class="nba-filter-group">${catChips}</div>
-        ${boroughSection}
-      </div>`;
+      </div>
+      ${boroughRow}`;
   }
 
   // ── Full render ──────────────────────────────────────────────────────────────
@@ -663,15 +659,14 @@
           <button class="nba-btn nba-btn-nav"   id="nba-prev-btn">&#8249;</button>
           <span class="nba-month-label">${MONTHS[month]} ${year}</span>
           <button class="nba-btn nba-btn-nav"   id="nba-next-btn">&#8250;</button>
-          <div class="nba-view-toggle">
+          ${state._autoList ? '' : `<div class="nba-view-toggle">
             <button class="nba-view-btn${view==='month'?' active':''}" data-view="month">Month</button>
             <button class="nba-view-btn${view==='list' ?' active':''}" data-view="list">List</button>
-          </div>
+          </div>`}
         </div>
       </div>
       ${buildFilters()}
-      ${body}
-      <div class="nba-footer"><a href="https://nycbirdalliance.org" target="_blank" rel="noopener">nycbirdalliance.org</a></div>`;
+      ${body}`;
 
     attachListeners();
     enforceMonthStyles();
