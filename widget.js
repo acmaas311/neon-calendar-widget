@@ -440,28 +440,12 @@
       ? '<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">' + h(e.category) + '</span></div>'
       : '';
 
-    // When an image is present use a side-by-side header row:
-    //   [60×60 square photo]  [title + date/time stacked]
-    // This avoids the full-width pixelated banner and uses the thumbnail well.
     // NO whitespace between child elements — newlines/spaces between block-level
     // siblings create anonymous inline boxes that inherit the host's large
     // line-height, producing ~38px invisible gaps between each element.
-    let header;
-    if (e.imageUrl) {
-      header = '<div style="display:flex!important;flex-direction:row!important;align-items:flex-start!important;gap:8px!important;margin:0 0 0 0!important;padding:0!important">'
-        + '<img src="' + h(e.imageUrl) + '" alt="" style="width:60px!important;height:60px!important;object-fit:cover!important;flex-shrink:0!important;display:block!important;margin:0!important;padding:0!important">'
-        + '<div style="flex:1!important;min-width:0!important;margin:0!important;padding:0!important">'
-        + '<div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
-        + '<div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
-        + '</div>'
-        + '</div>';
-    } else {
-      header = '<div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
-        + '<div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>';
-    }
-
     return '<div class="nba-tooltip' + (flip ? ' flip' : '') + '" style="padding:8px!important">'
-      + header
+      + '<div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
+      + '<div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
       + desc
       + cat
       + '</div>';
@@ -511,23 +495,6 @@
 
       const eventsHTML = visible.map(e => {
         const timeStr = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
-
-        if (e.imageUrl) {
-          // String concatenation avoids whitespace text nodes (same fix as tooltip).
-          // Full inline !important styles so host CSS cannot override.
-          // Square image via aspect-ratio:1/1; green chip aesthetic throughout.
-          return '<a href="' + h(e.url) + '" target="_blank" rel="noopener" class="nba-photo-wrap"'
-            + ' style="display:block!important;position:relative!important;background:#1BA249!important;cursor:pointer!important;overflow:visible!important;text-decoration:none!important;margin:0!important;padding:0!important">'
-            + '<img src="' + h(e.imageUrl) + '" alt="" loading="lazy"'
-            + ' style="width:100%!important;aspect-ratio:1/1!important;object-fit:cover!important;display:block!important;margin:0!important;padding:0!important"'
-            + ' onerror="this.style.display=\'none\'">'
-            + '<div style="padding:5px 7px 6px!important;margin:0!important;background:#1BA249!important">'
-            + '<span style="display:block!important;font-size:10px!important;font-weight:700!important;color:#fff!important;line-height:1.2!important;margin:0 0 2px 0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important">' + h(timeStr) + '</span>'
-            + '<span style="display:block!important;font-size:11px!important;font-weight:600!important;color:#fff!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;max-height:calc(1.3em * 3)!important">' + h(e.name) + '</span>'
-            + '</div>'
-            + ttHTML(e, flip)
-            + '</a>';
-        }
 
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
