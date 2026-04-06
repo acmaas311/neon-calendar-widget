@@ -287,7 +287,7 @@
 
 /* ── List view ───────────────────────────────────────────────────────────── */
 #nba-calendar .nba-list       { padding: 26px 24px !important; margin: 0 !important; }
-#nba-calendar .nba-list-group { margin-bottom: 26px !important; margin-top: 0 !important; padding: 0 !important; }
+#nba-calendar .nba-list-group { margin-bottom: 39px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-list-date-hdr {
   font-size: 11px; font-weight: 700; color: #15522B;
   text-transform: uppercase; letter-spacing: .08em; line-height: 1.2 !important;
@@ -353,7 +353,7 @@
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { position: relative !important; }
 #nba-calendar:not(#nba-x) .nba-list { display: block !important; padding: 26px 24px !important; margin: 0 !important; }
-#nba-calendar:not(#nba-x) .nba-list-group { display: block !important; margin-bottom: 12px !important; margin-top: 0 !important; padding: 0 !important; }
+#nba-calendar:not(#nba-x) .nba-list-group { display: block !important; margin-bottom: 39px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-date-hdr { display: block !important; padding: 5px 0 !important; margin-bottom: 6px !important; margin-top: 0 !important; line-height: 1.2 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { display: flex !important; padding: 16px !important; margin: 0 0 9px 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
