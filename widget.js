@@ -67,6 +67,14 @@
     _searchTimer: null,
   };
 
+  // ── Embed configuration (populated from data-* attributes in init()) ─────────
+  // Defaults produce standard calendar behaviour; flat mode activates the
+  // stripped-down chronological feed used on category landing pages.
+  const cfg = {
+    flat:        false,  // data-list-mode="flat"
+    presetSearch: '',    // data-preset-search="…"
+  };
+
   // ── CSS injection ────────────────────────────────────────────────────────────
   function injectStyles() {
     if (document.getElementById('nba-widget-css')) return;
@@ -427,6 +435,11 @@
     }
 
     return state.events.filter(e => {
+      // 0. Preset keyword filter (title-only, exact phrase match)
+      if (cfg.presetSearch) {
+        if (!(e.name || '').toLowerCase().includes(cfg.presetSearch.toLowerCase())) return false;
+      }
+
       // 1. Only show events from approved categories (uncategorized always pass through)
       if (e.category && !ALLOWED_CATS.has(e.category)) return false;
 
@@ -571,7 +584,7 @@
     const prevLabel = `‹ ${MONTHS[prevDate.getMonth()]} ${prevDate.getFullYear()}`;
     const nextLabel = `${MONTHS[nextDate.getMonth()]} ${nextDate.getFullYear()} ›`;
 
-    const bottomNav = `
+    const bottomNav = cfg.flat ? '' : `
       <div class="nba-list-nav">
         <button class="nba-list-nav-btn" id="nba-list-prev-btn">${prevLabel}</button>
         <span class="nba-list-nav-label">${MONTHS[month]} ${year}</span>
@@ -683,6 +696,13 @@
       body = `<div class="nba-status error">&#9888; Could not load events: ${h(error)}</div>`;
     } else {
       body = view === 'month' ? buildMonth() : buildList();
+    }
+
+    // ── Flat mode: no header, no filter bar, just the list ──────────────────
+    if (cfg.flat) {
+      el.innerHTML = body;
+      attachListeners();
+      return;
     }
 
     el.innerHTML = `
@@ -919,6 +939,32 @@
     return events;
   }
 
+  // Fetch today → +365 days for flat/preset-search embeds.
+  async function loadFlat() {
+    const t   = new Date();
+    const startDate = isoDate(t.getFullYear(), t.getMonth(), t.getDate());
+    const end = new Date(t);
+    end.setDate(end.getDate() + 365);
+    const endDate = isoDate(end.getFullYear(), end.getMonth(), end.getDate());
+
+    state.loading = true;
+    state.error   = null;
+    render();
+
+    try {
+      let events = await fetchAllPages(startDate, endDate);
+      events = events.filter(e => e.startDate >= startDate && e.startDate <= endDate);
+      state.events = events;
+      state.error  = null;
+    } catch (err) {
+      state.error  = err.message;
+      state.events = [];
+    } finally {
+      state.loading = false;
+      render();
+    }
+  }
+
   async function loadMonth() {
     const { year, month } = state;
     const key       = `${year}-${String(month+1).padStart(2,'0')}`;
@@ -1008,15 +1054,27 @@
       el.id = 'nba-calendar';
       document.body.appendChild(el);
     }
-    // Auto-switch to list on narrow screens
-    if (window.ResizeObserver) {
-      new ResizeObserver(checkResponsive).observe(el);
-    }
-    if (el.offsetWidth > 0 && el.offsetWidth < NARROW_PX) {
+
+    // Read embed configuration from data-* attributes on the host div.
+    // These are optional — omitting them produces the standard calendar.
+    cfg.flat         = el.dataset.listMode === 'flat';
+    cfg.presetSearch = (el.dataset.presetSearch || '').trim();
+
+    if (cfg.flat) {
+      // Flat/preset mode: always list view, no responsive month switching.
       state.view = 'list';
-      state._autoList = true;
+      loadFlat();
+    } else {
+      // Standard mode: responsive month/list calendar.
+      if (window.ResizeObserver) {
+        new ResizeObserver(checkResponsive).observe(el);
+      }
+      if (el.offsetWidth > 0 && el.offsetWidth < NARROW_PX) {
+        state.view = 'list';
+        state._autoList = true;
+      }
+      loadMonth();
     }
-    loadMonth();
   }
 
   if (document.readyState === 'loading') {
