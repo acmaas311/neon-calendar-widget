@@ -31,11 +31,11 @@
   // stored in NeonCRM. Events whose category doesn't appear in any of these
   // arrays are hidden from the widget entirely.
   const CATEGORY_CONFIG = [
-    { label: 'Festivals',                neonCats: ['Festivals'] },
-    { label: 'Free & Partner Outings',   neonCats: ['Free and Partner Walks'] },
-    { label: 'Paid Outings and Classes', neonCats: ['Local Trips'] },
-    { label: 'Member Events',            neonCats: ['In-person Members-only Events'] },
-    { label: 'Lectures',                 neonCats: ['Lectures'] },
+    { label: 'Festivals',               neonCats: ['Festivals'] },
+    { label: 'Free & Partner Outings',  neonCats: ['Free and Partner Walks'] },
+    { label: 'Paid Outings & Classes',  neonCats: ['Local Trips'] },
+    { label: 'Member Events',           neonCats: ['In-person Members-only Events'] },
+    { label: 'Lectures',                neonCats: ['Lectures'] },
     { label: 'Volunteer Opportunities',  neonCats: ['Virtual Community Science Orientations'] },
   ];
 
@@ -45,7 +45,9 @@
   // Maps NeonCRM category names to friendlier display labels shown on tags.
   // Only entries that differ from the raw NeonCRM name need to be listed here.
   const CATEGORY_DISPLAY = {
-    'Free and Partner Walks': 'Free and Partner Outings',
+    'Free and Partner Walks':        'Free and Partner Outings',
+    'Local Trips':                   'Paid Outings & Classes',
+    'In-person Members-only Events': 'Member Events',
   };
 
   // ── State ───────────────────────────────────────────────────────────────────
@@ -634,7 +636,7 @@
     const panelOpen = state._catOpen ? ' open' : '';
 
     const items = CATEGORY_CONFIG.map(({ label }) => {
-      const checked = sel.includes(label) ? ' checked' : '';
+      const checked = sel.length === 0 || sel.includes(label) ? ' checked' : '';
       return `<label class="nba-cat-option"><input type="checkbox" data-filter="cat" data-value="${h(label)}"${checked}>${h(label)}</label>`;
     }).join('');
 
@@ -808,12 +810,20 @@
       });
     }
 
-    // Category checkboxes — update filter state, keep panel open after re-render
+    // Category checkboxes — "all checked" = no filter; uncheck to exclude.
+    // sel holds the labels that ARE visible (empty = all visible).
     el.querySelectorAll('#nba-cat-panel input[data-filter="cat"]').forEach(cb => {
       cb.addEventListener('change', () => {
-        const arr = state.filters.categories;
-        const i   = arr.indexOf(cb.dataset.value);
-        i === -1 ? arr.push(cb.dataset.value) : arr.splice(i, 1);
+        const allLabels = CATEGORY_CONFIG.map(c => c.label);
+        if (!cb.checked) {
+          // User unchecked → show everything except this label
+          state.filters.categories = allLabels.filter(l => l !== cb.dataset.value);
+        } else {
+          // User re-checked → add back; if all are now visible, clear filter
+          const arr = state.filters.categories;
+          if (!arr.includes(cb.dataset.value)) arr.push(cb.dataset.value);
+          if (arr.length === allLabels.length) state.filters.categories = [];
+        }
         state._catOpen = true;
         render();
         state._catOpen = false;
