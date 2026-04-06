@@ -161,6 +161,32 @@
 #nba-calendar .nba-filter-chip.active  { background: #15522B; border-color: #15522B; color: #fff; }
 #nba-calendar .nba-filter-chip:hover:not(.active) { border-color: #1BA249; color: #1BA249; }
 #nba-calendar .nba-filter-divider { width: 1px; height: 22px; background: #c0d8c9; flex-shrink: 0; }
+/* ── Category dropdown ───────────────────────────────────────────────────── */
+#nba-calendar .nba-cat-dropdown { position: relative; display: inline-block; }
+#nba-calendar .nba-cat-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1.5px solid #c0d8c9; color: #15522B;
+  padding: 5px 11px !important; font-size: 11px; font-weight: 600;
+  cursor: pointer; white-space: nowrap; user-select: none; margin: 0 !important;
+  font-family: 'Montserrat', sans-serif !important; line-height: 1 !important; transition: all .15s;
+}
+#nba-calendar .nba-cat-btn:hover   { border-color: #1BA249; }
+#nba-calendar .nba-cat-btn.active  { background: #15522B; border-color: #15522B; color: #fff; }
+#nba-calendar .nba-cat-arrow { font-style: normal; font-size: 10px; transition: transform .15s; }
+#nba-calendar .nba-cat-panel {
+  display: none; position: absolute; top: calc(100% + 5px); left: 0;
+  background: #fff; border: 1.5px solid #c0d8c9;
+  box-shadow: 0 6px 18px rgba(0,0,0,.14); z-index: 500; min-width: 210px; padding: 4px 0;
+}
+#nba-calendar .nba-cat-panel.open { display: block; }
+#nba-calendar .nba-cat-option {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 14px !important; cursor: pointer; font-size: 11px; font-weight: 500;
+  color: #333; line-height: 1 !important; margin: 0 !important; user-select: none;
+  font-family: 'Montserrat', sans-serif !important;
+}
+#nba-calendar .nba-cat-option:hover { background: #f0f7f2; }
+#nba-calendar .nba-cat-option input[type="checkbox"] { margin: 0 !important; cursor: pointer; flex-shrink: 0; accent-color: #15522B; }
 
 /* ── Loading / Error ─────────────────────────────────────────────────────── */
 #nba-calendar .nba-status { padding: 48px 24px; text-align: center; font-size: 13px; color: #777; }
@@ -596,12 +622,27 @@
   // ── Filter bar builder ───────────────────────────────────────────────────────
   function buildFilters() {
     const { filters } = state;
+    const sel = filters.categories;
 
-    // Category chips — always shown from CATEGORY_CONFIG (never dynamic)
-    const catChips = CATEGORY_CONFIG.map(({ label }) => {
-      const on = filters.categories.length === 0 || filters.categories.includes(label);
-      return `<button class="nba-filter-chip${on ? ' active' : ''}" data-filter="cat" data-value="${h(label)}">${h(label)}</button>`;
+    // Category dropdown button label
+    let btnLabel;
+    if (sel.length === 0)      btnLabel = 'All Categories';
+    else if (sel.length === 1) btnLabel = sel[0];
+    else                       btnLabel = sel.length + ' selected';
+
+    const hasFilter = sel.length > 0;
+    const panelOpen = state._catOpen ? ' open' : '';
+
+    const items = CATEGORY_CONFIG.map(({ label }) => {
+      const checked = sel.includes(label) ? ' checked' : '';
+      return `<label class="nba-cat-option"><input type="checkbox" data-filter="cat" data-value="${h(label)}"${checked}>${h(label)}</label>`;
     }).join('');
+
+    const catDropdown = `<div class="nba-cat-dropdown">`
+      + `<button class="nba-cat-btn${hasFilter ? ' active' : ''}" id="nba-cat-btn">`
+      + h(btnLabel) + ` <i class="nba-cat-arrow">▾</i></button>`
+      + `<div class="nba-cat-panel${panelOpen}" id="nba-cat-panel">${items}</div>`
+      + `</div>`;
 
     // Borough chips — derived from events that have a recognised borough
     const boroughsInData = new Set(state.events.map(e => e.borough).filter(Boolean));
@@ -622,7 +663,7 @@
     return `
       <div class="nba-filters">
         <span class="nba-filter-label">Category</span>
-        <div class="nba-filter-group">${catChips}</div>
+        <div class="nba-filter-group">${catDropdown}</div>
       </div>
       ${boroughRow}`;
   }
@@ -757,13 +798,42 @@
       b.addEventListener('click', () => { state.view = b.dataset.view; state._autoList = false; render(); })
     );
 
-    // Filter chips (category and borough share the same chip style)
-    el.querySelectorAll('.nba-filter-chip[data-filter]').forEach(b =>
+    // Category dropdown — toggle open/closed
+    const catBtn   = el.querySelector('#nba-cat-btn');
+    const catPanel = el.querySelector('#nba-cat-panel');
+    if (catBtn && catPanel) {
+      catBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        catPanel.classList.toggle('open');
+      });
+    }
+
+    // Category checkboxes — update filter state, keep panel open after re-render
+    el.querySelectorAll('#nba-cat-panel input[data-filter="cat"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const arr = state.filters.categories;
+        const i   = arr.indexOf(cb.dataset.value);
+        i === -1 ? arr.push(cb.dataset.value) : arr.splice(i, 1);
+        state._catOpen = true;
+        render();
+        state._catOpen = false;
+      });
+    });
+
+    // Click outside category dropdown → close it
+    if (state._catOutsideClick) document.removeEventListener('click', state._catOutsideClick);
+    state._catOutsideClick = () => {
+      const panel = document.querySelector('#nba-calendar #nba-cat-panel');
+      if (panel) panel.classList.remove('open');
+    };
+    document.addEventListener('click', state._catOutsideClick);
+
+    // Borough chips
+    el.querySelectorAll('.nba-filter-chip[data-filter="borough"]').forEach(b =>
       b.addEventListener('click', () => {
-        const { filter, value } = b.dataset;
-        const arr = filter === 'borough' ? state.filters.boroughs : state.filters.categories;
-        const i   = arr.indexOf(value);
-        i === -1 ? arr.push(value) : arr.splice(i, 1);
+        const arr = state.filters.boroughs;
+        const i   = arr.indexOf(b.dataset.value);
+        i === -1 ? arr.push(b.dataset.value) : arr.splice(i, 1);
         render();
       })
     );
