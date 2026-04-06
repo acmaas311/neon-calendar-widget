@@ -45,7 +45,7 @@
   // Maps NeonCRM category names to friendlier display labels shown on tags.
   // Only entries that differ from the raw NeonCRM name need to be listed here.
   const CATEGORY_DISPLAY = {
-    'Free and Partner Walks':        'Free and Partner Outings',
+    'Free and Partner Walks':        'Free & Partner Outings',
     'Local Trips':                   'Paid Outings & Classes',
     'In-person Members-only Events': 'Member Events',
   };
@@ -286,16 +286,16 @@
 #nba-calendar .nba-tt-tag.paid { background: #fff3e0; color: #c0540a; }
 
 /* ── List view ───────────────────────────────────────────────────────────── */
-#nba-calendar .nba-list       { padding: 22px 24px !important; margin: 0 !important; }
-#nba-calendar .nba-list-group { margin-bottom: 22px !important; margin-top: 0 !important; padding: 0 !important; }
+#nba-calendar .nba-list       { padding: 16px 24px !important; margin: 0 !important; }
+#nba-calendar .nba-list-group { margin-bottom: 16px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-list-date-hdr {
   font-size: 11px; font-weight: 700; color: #15522B;
   text-transform: uppercase; letter-spacing: .08em; line-height: 1.2 !important;
   padding: 7px 0 !important; border-bottom: 2px solid #1BA249; margin-bottom: 10px !important; margin-top: 0 !important;
 }
 #nba-calendar .nba-list-event {
-  display: flex; gap: 14px; padding: 14px !important; border: 1.5px solid #e8f3ec;
-  margin-bottom: 8px !important; margin-top: 0 !important; cursor: pointer; transition: box-shadow .15s, border-color .15s;
+  display: flex; gap: 14px; padding: 10px !important; border: 1.5px solid #e8f3ec;
+  margin-bottom: 6px !important; margin-top: 0 !important; cursor: pointer; transition: box-shadow .15s, border-color .15s;
   background: #fff; text-decoration: none !important; position: relative !important;
 }
 #nba-calendar .nba-list-event:hover { box-shadow: 0 2px 10px rgba(21,82,43,.10); border-color: #1BA249; }
@@ -636,7 +636,7 @@
     const panelOpen = state._catOpen ? ' open' : '';
 
     const items = CATEGORY_CONFIG.map(({ label }) => {
-      const checked = sel.length === 0 || sel.includes(label) ? ' checked' : '';
+      const checked = sel.includes(label) ? ' checked' : '';
       return `<label class="nba-cat-option"><input type="checkbox" data-filter="cat" data-value="${h(label)}"${checked}>${h(label)}</label>`;
     }).join('');
 
@@ -810,20 +810,12 @@
       });
     }
 
-    // Category checkboxes — "all checked" = no filter; uncheck to exclude.
-    // sel holds the labels that ARE visible (empty = all visible).
+    // Category checkboxes — check to include; empty = all shown.
     el.querySelectorAll('#nba-cat-panel input[data-filter="cat"]').forEach(cb => {
       cb.addEventListener('change', () => {
-        const allLabels = CATEGORY_CONFIG.map(c => c.label);
-        if (!cb.checked) {
-          // User unchecked → show everything except this label
-          state.filters.categories = allLabels.filter(l => l !== cb.dataset.value);
-        } else {
-          // User re-checked → add back; if all are now visible, clear filter
-          const arr = state.filters.categories;
-          if (!arr.includes(cb.dataset.value)) arr.push(cb.dataset.value);
-          if (arr.length === allLabels.length) state.filters.categories = [];
-        }
+        const arr = state.filters.categories;
+        const i   = arr.indexOf(cb.dataset.value);
+        i === -1 ? arr.push(cb.dataset.value) : arr.splice(i, 1);
         state._catOpen = true;
         render();
         state._catOpen = false;
