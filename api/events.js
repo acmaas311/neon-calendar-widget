@@ -209,9 +209,12 @@ export default async function handler(req, res) {
         // Strip HTML tags and decode all entities Neon may embed in text fields.
         name:    cleanText(e.name || 'Untitled Event'),
         summary: cleanText(e.summary || e.description || ''),
-        // Prefer the first full-res image embedded in the raw description HTML;
-        // fall back to the low-res thumbnailUrl if none is found.
-        imageUrl: ((() => { const m = (e.summary || e.description || '').match(/<img[^>]+src=["']([^"']+)["']/i); return m ? m[1] : null; })()) || e.thumbnailUrl || null,
+        // thumbnailUrl is server-resampled by NeonCRM and looks clean at small
+        // display sizes. The raw description image is a full camera JPEG that
+        // produces heavy artifacts when downscaled to thumbnail size by the browser.
+        imageUrl: e.thumbnailUrl || null,
+        // Full-res image from description HTML, reserved for future larger displays.
+        imageUrlFull: ((() => { const m = (e.summary || e.description || '').match(/<img[^>]+src=["']([^"']+)["']/i); return m ? m[1] : null; })()) || null,
         isFree,
         isFull,
         // Borough derived from addressCity
