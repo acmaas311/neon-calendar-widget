@@ -333,7 +333,7 @@
 }
 #nba-calendar .nba-list-event:hover { box-shadow: 0 2px 10px rgba(21,82,43,.10); border-color: #1BA249; }
 #nba-calendar .nba-list-event.today-grp { border-left: 3px solid #1BA249; }
-#nba-calendar .nba-list-img  { width: 88px; height: 70px; object-fit: cover; flex-shrink: 0; }
+#nba-calendar .nba-list-img  { width: 154px; height: 116px; object-fit: cover; flex-shrink: 0; }
 #nba-calendar .nba-list-body { flex: 1; min-width: 0; margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 3px !important; align-content: start !important; }
 #nba-calendar .nba-list-name { font-size: 14px !important; font-weight: 700 !important; color: #15522B !important; margin: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
 #nba-calendar .nba-list-time { font-size: 12px !important; font-weight: 600 !important; color: #018F99 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
@@ -635,7 +635,7 @@
 
       const rows = groups[date].map(e => {
         const img  = e.imageUrl
-          ? `<img src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:140px!important;height:105px!important;object-fit:cover!important;object-position:center top!important;flex-shrink:0!important;display:block!important;margin:0 16px 0 0!important;padding:0!important;border-radius:4px!important;image-rendering:auto!important">`
+          ? `<img src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:154px!important;height:116px!important;object-fit:cover!important;object-position:center top!important;flex-shrink:0!important;display:block!important;margin:0 16px 0 0!important;padding:0!important;border-radius:4px!important;image-rendering:auto!important">`
           : '';
         const time = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
         const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(CATEGORY_DISPLAY[e.category] || e.category)}</span>` : '';
@@ -823,7 +823,7 @@
   // return imageUrl:null even though they have an image in their full record.
   // After the list renders we fire parallel /api/event?id=... calls for those
   // events, then inject <img> tags directly into the DOM — no full re-render.
-  const IMG_STYLE = 'width:140px!important;height:105px!important;object-fit:cover!important;'
+  const IMG_STYLE = 'width:154px!important;height:116px!important;object-fit:cover!important;'
     + 'object-position:center top!important;flex-shrink:0!important;display:block!important;'
     + 'margin:0 16px 0 0!important;padding:0!important;border-radius:4px!important;image-rendering:auto!important';
 
