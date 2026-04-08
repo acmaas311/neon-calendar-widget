@@ -300,6 +300,7 @@
   border: 1.5px solid #d4e8da; box-shadow: 0 4px 20px rgba(0,0,0,.18);
   padding: 8px !important; width: 230px; pointer-events: none;
   top: 0; left: calc(100% + 8px); display: none; margin: 0 !important;
+  overflow: hidden !important;
 }
 #nba-calendar .nba-tooltip.flip { left: auto; right: calc(100% + 8px); }
 #nba-calendar .nba-event-chip:hover  .nba-tooltip,
@@ -514,10 +515,20 @@
       ? '<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">' + h(catLabel) + '</span></div>'
       : '';
 
+    // Full-bleed image at the top — negative margins cancel the 8px padding so
+    // the image stretches edge-to-edge inside the tooltip border.
+    const img = e.imageUrl
+      ? '<img src="' + h(e.imageUrl) + '" alt="" loading="lazy"'
+        + ' style="display:block!important;width:calc(100% + 16px)!important;height:120px!important;'
+        + 'object-fit:cover!important;object-position:center top!important;'
+        + 'margin:-8px -8px 8px -8px!important;padding:0!important;flex-shrink:0!important">'
+      : '';
+
     // NO whitespace between child elements — newlines/spaces between block-level
     // siblings create anonymous inline boxes that inherit the host's large
     // line-height, producing ~38px invisible gaps between each element.
     return '<div class="nba-tooltip' + (flip ? ' flip' : '') + '" style="padding:8px!important">'
+      + img
       + '<div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
       + '<div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
       + desc
