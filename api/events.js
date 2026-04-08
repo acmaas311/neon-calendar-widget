@@ -209,17 +209,18 @@ export default async function handler(req, res) {
         // Strip HTML tags and decode all entities Neon may embed in text fields.
         name:    cleanText(e.name || 'Untitled Event'),
         summary: cleanText(e.summary || e.description || ''),
-        // Search both summary and description independently for the first <img>
-        // src — using || short-circuits and misses images in e.description when
-        // e.summary is non-empty but text-only (common on member events).
+        // Search all description-like fields NeonCRM may use, before cleanText()
+        // strips the HTML. eventDescription is the full rich-text field in the
+        // NeonCRM schema; description and summary may be plain-text truncations.
         imageUrl: ((() => {
-          const raw = [e.summary, e.description].filter(Boolean);
+          const raw = [e.eventDescription, e.description, e.summary].filter(Boolean);
           for (const s of raw) {
             const m = s.match(/<img[^>]+src=["']([^"']+)["']/i);
             if (m) return m[1];
           }
           return null;
         })()) || e.thumbnailUrl || null,
+        _rawFields: Object.keys(e).join(','),  // temporary debug — remove after diagnosis
         isFree,
         isFull,
         // Borough derived from addressCity
