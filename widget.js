@@ -89,7 +89,8 @@
     style.textContent = `
 /* ── Scoped reset ─────────────────────────────────────────────────────────── */
 #nba-calendar, #nba-calendar * { box-sizing: border-box !important; line-height: 1 !important; }
-#nba-calendar a, #nba-calendar button { font-family: 'Montserrat', sans-serif !important; }
+#nba-calendar a, #nba-calendar button, .nba-day-popup-chip { font-family: 'Montserrat', sans-serif !important; }
+.nba-day-popup-chip, .nba-day-popup-chip:link, .nba-day-popup-chip:visited, .nba-day-popup-chip:hover, .nba-day-popup-chip:active { text-decoration: none !important; }
 
 #nba-calendar {
   font-family: 'Montserrat', sans-serif;
