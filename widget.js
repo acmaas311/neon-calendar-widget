@@ -519,7 +519,7 @@
     // the image stretches edge-to-edge inside the tooltip border.
     const img = (showImg && e.imageUrl)
       ? '<img src="' + h(e.imageUrl) + '" alt="" loading="lazy"'
-        + ' style="display:block!important;width:calc(100% + 16px)!important;height:120px!important;'
+        + ' style="display:block!important;width:calc(100% + 16px)!important;height:150px!important;'
         + 'object-fit:cover!important;object-position:center top!important;'
         + 'margin:-8px -8px 8px -8px!important;padding:0!important;flex-shrink:0!important">'
       : '';
