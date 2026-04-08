@@ -287,11 +287,12 @@
 }
 #nba-calendar .nba-day-popup-chip, .nba-day-popup-chip {
   display: flex; flex-direction: column; gap: 2px;
-  padding: 6px 7px !important; margin: 3px 0 0 0 !important;
-  background: #1BA249; text-decoration: none !important;
-  cursor: pointer; position: relative;
+  padding: 8px 10px !important; margin: 3px 0 0 0 !important;
+  background: #fff; border: 1.5px solid #e8f3ec;
+  text-decoration: none !important; cursor: pointer; position: relative;
+  transition: background .12s;
 }
-#nba-calendar .nba-day-popup-chip:hover, .nba-day-popup-chip:hover { opacity: .88; text-decoration: none !important; }
+#nba-calendar .nba-day-popup-chip:hover, .nba-day-popup-chip:hover { background: #f0f7f2 !important; text-decoration: none !important; }
 #nba-calendar .nba-day-popup-chip:hover .nba-tooltip, .nba-day-popup-chip:hover .nba-tooltip { display: block; }
 
 /* ── Tooltip ─────────────────────────────────────────────────────────────── */
@@ -947,8 +948,8 @@
         const chipsHTML = evts.map(ev => {
           const timeStr = ev.startTime ? fmtRange(ev.startTime, ev.endTime) : 'All Day';
           return '<a href="' + h(ev.url) + '" target="_blank" rel="noopener" class="nba-day-popup-chip" style="text-decoration:none!important">'
-            + '<span style="display:block!important;font-size:10px!important;font-weight:700!important;color:rgba(255,255,255,.85)!important;line-height:1.2!important;margin:0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;text-decoration:none!important">' + h(timeStr) + '</span>'
-            + '<span style="display:block!important;font-size:11px!important;font-weight:600!important;color:#fff!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;text-decoration:none!important">' + h(ev.name) + '</span>'
+            + '<span style="display:block!important;font-size:10px!important;font-weight:700!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;text-decoration:none!important">' + h(timeStr) + '</span>'
+            + '<span style="display:block!important;font-size:13px!important;font-weight:700!important;color:#15522B!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;text-decoration:none!important">' + h(ev.name) + '</span>'
             + ttHTML(ev, flipPop)
             + '</a>';
         }).join('');
