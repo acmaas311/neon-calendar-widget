@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     for (const field of [data.eventDescription, data.description, data.summary]) {
       if (!field) continue;
       const m = field.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (m) { imageUrl = m[1]; break; }
+      if (m) { try { imageUrl = encodeURI(decodeURI(m[1])); } catch (_) { imageUrl = m[1]; } break; }
     }
 
     // Cache individual event responses for 30 minutes

@@ -216,7 +216,12 @@ export default async function handler(req, res) {
           const raw = [e.eventDescription, e.description, e.summary].filter(Boolean);
           for (const s of raw) {
             const m = s.match(/<img[^>]+src=["']([^"']+)["']/i);
-            if (m) return m[1];
+            if (m) {
+              // encodeURI fixes literal spaces and invalid chars in filenames
+              // (e.g. "Marine Park Attendees.jpg"). decodeURI first prevents
+              // double-encoding URLs that are already partially encoded.
+              try { return encodeURI(decodeURI(m[1])); } catch (_) { return m[1]; }
+            }
           }
           return null;
         })()) || e.thumbnailUrl || null,
