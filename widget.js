@@ -1109,9 +1109,12 @@
     const endDate   = `${key}-${lastDay}`;
 
     if (state._cache[key]) {
-      state.events = state._cache[key];
+      // Reset loading in case a previous fetch was still in-flight when we
+      // navigated here — without this the spinner would never clear.
+      state.events  = state._cache[key];
+      state.loading = false;
+      state.error   = null;
       render();
-      // Still kick off adjacent pre-fetches in case they aren't cached yet.
       prefetchAdjacentMonths(year, month);
       return;
     }
@@ -1120,27 +1123,36 @@
     state.error   = null;
     render();
 
+    let events, fetchError;
     try {
-      let events = await fetchAllPages(startDate, endDate);
-
-      // ── Client-side date guard ─────────────────────────────────────────────
-      // Some Neon orgs return all events regardless of date params; filter here
-      // to only include events that START within the requested month.
+      events = await fetchAllPages(startDate, endDate);
+      // ── Client-side date guard ───────────────────────────────────────────
+      // Some Neon orgs return all events regardless of date params.
       events = events.filter(e => e.startDate >= startDate && e.startDate <= endDate);
-
-      state._cache[key] = events;
-      state.events      = events;
-      state.error       = null;
-
     } catch (err) {
-      state.error  = err.message;
-      state.events = [];
-    } finally {
-      state.loading = false;
-      render();
+      fetchError = err;
     }
 
-    // Pre-fetch neighbours silently so navigating feels instant.
+    // Always cache a successful result even if we navigated away — coming back
+    // to this month later will then be instant.
+    if (!fetchError) state._cache[key] = events;
+
+    // ── Stale-response guard ─────────────────────────────────────────────────
+    // If the user navigated to a different month while this fetch was in-flight,
+    // the newer loadMonth() call owns the display. Updating state here would
+    // overwrite that month's events with ours, leaving the grid empty.
+    if (state.year !== year || state.month !== month) return;
+
+    if (fetchError) {
+      state.error  = fetchError.message;
+      state.events = [];
+    } else {
+      state.events = events;
+      state.error  = null;
+    }
+    state.loading = false;
+    render();
+
     prefetchAdjacentMonths(year, month);
   }
 
