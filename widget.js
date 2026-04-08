@@ -498,7 +498,7 @@
   // ── Tooltip HTML ─────────────────────────────────────────────────────────────
   // All inner elements use inline styles so host-CSS specificity can never
   // override spacing, regardless of how aggressively the site styles divs/spans.
-  function ttHTML(e, flip) {
+  function ttHTML(e, flip, showImg = true) {
     const timeRange = fmtRange(e.startTime, e.endTime);
     const dateLabel = fmtShortDate(e.startDate);
     const timeStr   = dateLabel && timeRange !== 'All Day'
@@ -517,7 +517,7 @@
 
     // Full-bleed image at the top — negative margins cancel the 8px padding so
     // the image stretches edge-to-edge inside the tooltip border.
-    const img = e.imageUrl
+    const img = (showImg && e.imageUrl)
       ? '<img src="' + h(e.imageUrl) + '" alt="" loading="lazy"'
         + ' style="display:block!important;width:calc(100% + 16px)!important;height:120px!important;'
         + 'object-fit:cover!important;object-position:center top!important;'
@@ -659,7 +659,7 @@
           + '<div class="nba-list-time" style="margin:0!important;padding:0!important;line-height:1.2!important">' + h(time) + '</div>'
           + (cat ? '<div class="nba-list-tags" style="margin:0!important;padding:0!important">' + cat + '</div>' : '')
           + '</div>'
-          + ttHTML(e, false)
+          + ttHTML(e, false, false)
           + '</a>';
       }).join('');
 
