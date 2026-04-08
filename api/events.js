@@ -220,7 +220,6 @@ export default async function handler(req, res) {
           }
           return null;
         })()) || e.thumbnailUrl || null,
-        _rawFields: Object.keys(e).join(','),  // temporary debug — remove after diagnosis
         isFree,
         isFull,
         // Borough derived from addressCity

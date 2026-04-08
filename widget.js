@@ -730,6 +730,7 @@
     if (cfg.flat) {
       el.innerHTML = body;
       attachListeners();
+      backfillImages();
       return;
     }
 
@@ -760,6 +761,8 @@
     setTimeout(enforceMonthStyles, 0);
     setTimeout(enforceMonthStyles, 300);
     setTimeout(enforceMonthStyles, 1000);
+    // Backfill images for list-view events missing them from the list API
+    if (state.view === 'list') backfillImages();
   }
 
   // ── Force layout overrides regardless of host CSS/JS ─────────────────────────
@@ -813,6 +816,64 @@
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
       f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
     });
+  }
+
+  // ── Backfill images for list-view events that had no image from the list API ──
+  // The NeonCRM list endpoint truncates/strips description HTML, so some events
+  // return imageUrl:null even though they have an image in their full record.
+  // After the list renders we fire parallel /api/event?id=... calls for those
+  // events, then inject <img> tags directly into the DOM — no full re-render.
+  const IMG_STYLE = 'width:140px!important;height:105px!important;object-fit:cover!important;'
+    + 'object-position:center top!important;flex-shrink:0!important;display:block!important;'
+    + 'margin:0 16px 0 0!important;padding:0!important;border-radius:4px!important;image-rendering:auto!important';
+
+  async function backfillImages() {
+    // Find all list-event anchors that have no <img> child yet
+    const missing = Array.from(
+      document.querySelectorAll('#nba-calendar .nba-list-event:not([data-img-checked])')
+    ).filter(a => !a.querySelector('img'));
+
+    if (!missing.length) return;
+
+    // Mark them so repeat renders don't re-fetch
+    missing.forEach(a => a.setAttribute('data-img-checked', '1'));
+
+    // Map anchor → event id (stored as last segment of the event URL)
+    const toFetch = missing.map(a => {
+      const url = a.getAttribute('href') || '';
+      const id  = url.match(/event=(\d+)/)?.[1];
+      return { el: a, id };
+    }).filter(x => x.id);
+
+    if (!toFetch.length) return;
+
+    // Fire all requests in parallel
+    await Promise.all(toFetch.map(async ({ el, id }) => {
+      try {
+        const res  = await fetch(`${BASE_URL}/api/event?id=${id}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.imageUrl) return;
+
+        // Only inject if the element is still in the DOM and still has no image
+        if (!document.body.contains(el) || el.querySelector('img')) return;
+
+        const img = document.createElement('img');
+        img.src    = data.imageUrl;
+        img.alt    = '';
+        img.loading = 'lazy';
+        img.setAttribute('style', IMG_STYLE);
+        img.onerror = () => img.style.display = 'none';
+
+        // Insert before the nba-list-body div
+        const body = el.querySelector('.nba-list-body');
+        if (body) el.insertBefore(img, body);
+
+        // Also update state so tooltip/other logic has the URL
+        const ev = state.events.find(e => String(e.id) === String(id));
+        if (ev) ev.imageUrl = data.imageUrl;
+      } catch (_) { /* silent fail — image just won't show */ }
+    }));
   }
 
   // ── Attach all event listeners after each render ─────────────────────────────
