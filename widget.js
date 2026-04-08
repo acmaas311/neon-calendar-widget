@@ -635,7 +635,7 @@
 
       const rows = groups[date].map(e => {
         const img  = e.imageUrl
-          ? `<img src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:80px!important;height:80px!important;object-fit:cover!important;flex-shrink:0!important;display:block!important;margin:0 12px 0 0!important;padding:0!important">`
+          ? `<img src="${h(e.imageUrl)}" alt="" loading="lazy" onerror="this.style.display='none'" style="width:96px!important;height:96px!important;object-fit:cover!important;flex-shrink:0!important;display:block!important;margin:0 14px 0 0!important;padding:0!important;border-radius:4px!important;image-rendering:auto!important">`
           : '';
         const time = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
         const cat  = e.category ? `<span class="nba-tag nba-tag-cat">${h(CATEGORY_DISPLAY[e.category] || e.category)}</span>` : '';
