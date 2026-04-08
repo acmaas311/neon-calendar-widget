@@ -270,13 +270,13 @@
 #nba-calendar .nba-more-btn:hover { color: #15522B; text-decoration: underline; }
 
 /* ── Day overflow popup ──────────────────────────────────────────────────── */
-#nba-calendar .nba-day-popup {
-  position: absolute; z-index: 199999;
+#nba-calendar .nba-day-popup, .nba-day-popup {
+  position: fixed; z-index: 999999;
   background: #fff; border: 1.5px solid #c0d8c9;
   box-shadow: 0 6px 24px rgba(0,0,0,.18);
-  min-width: 220px; max-width: 280px;
   max-height: 320px; overflow-y: auto;
   padding: 6px !important;
+  font-family: 'Montserrat', sans-serif;
 }
 #nba-calendar .nba-day-popup-hdr {
   font-size: 11px; font-weight: 700; color: #15522B;
@@ -920,23 +920,29 @@
       loadMonth();
     });
 
-    // "+ N more" → show day overflow popup above the button
+    // "+ N more" → show day overflow popup above the button.
+    // The popup is appended to <body> and uses position:fixed so it escapes
+    // every clipping ancestor (.nba-calendar has overflow-x:auto, the grid
+    // body creates a stacking context) — neither can clip a fixed child.
     el.querySelectorAll('.nba-more-btn[data-date]').forEach(b => {
-      b.addEventListener('click', e => {
-        e.stopPropagation();
+      b.addEventListener('click', evt => {
+        evt.stopPropagation();
 
         // Remove any existing popup first
         document.querySelectorAll('.nba-day-popup').forEach(p => p.remove());
 
-        const ids    = (b.dataset.overflowIds || '').split(',').filter(Boolean);
-        const evts   = state.events.filter(ev => ids.includes(String(ev.id)));
-        const date   = b.dataset.date;
-        const [y, m, d] = date.split('-').map(Number);
-        const label  = `${MONTHS[m-1]} ${d}`;
-        const col    = Array.from(el.querySelectorAll('.nba-more-btn')).indexOf(b) % 7;
-        const flipPop = col >= 5;
+        const ids   = (b.dataset.overflowIds || '').split(',').filter(Boolean);
+        const evts  = state.events.filter(ev => ids.includes(String(ev.id)));
+        const date  = b.dataset.date;
+        const [, m, d] = date.split('-').map(Number);
+        const label = MONTHS[m-1] + ' ' + d;
 
-        // Build popup chips using string concatenation (no whitespace nodes)
+        // Determine left/right alignment from button position within viewport
+        const btnRect  = b.getBoundingClientRect();
+        const popupW   = 260;
+        const flipPop  = (btnRect.left + popupW) > window.innerWidth - 16;
+
+        // Build popup chips — string concat, no whitespace nodes
         const chipsHTML = evts.map(ev => {
           const timeStr = ev.startTime ? fmtRange(ev.startTime, ev.endTime) : 'All Day';
           return '<a href="' + h(ev.url) + '" target="_blank" rel="noopener" class="nba-day-popup-chip">'
@@ -948,18 +954,22 @@
 
         const popup = document.createElement('div');
         popup.className = 'nba-day-popup';
-        // Position: above the button, aligned to left (or right if near edge)
-        popup.style.cssText = 'bottom:calc(100% + 4px)!important;'
-          + (flipPop ? 'right:0!important;left:auto!important;' : 'left:0!important;right:auto!important;');
+        // Use fixed positioning — escapes all overflow clipping in the widget
+        const topPx  = btnRect.top + window.scrollY - 8;  // anchor to top of button
+        const leftPx = flipPop
+          ? (btnRect.right - popupW)
+          : btnRect.left;
+        popup.style.cssText = [
+          'position:fixed!important',
+          'z-index:999999!important',
+          'width:' + popupW + 'px!important',
+          'top:auto!important',
+          'bottom:' + (window.innerHeight - btnRect.top + 4) + 'px!important',
+          (flipPop ? 'right:' + (window.innerWidth - btnRect.right) + 'px!important;left:auto!important'
+                   : 'left:' + btnRect.left + 'px!important;right:auto!important'),
+        ].join(';');
         popup.innerHTML = '<div class="nba-day-popup-hdr">' + label + '</div>' + chipsHTML;
-
-        // The cell div is the button's grandparent — position popup relative to it
-        const cell = b.closest('.nba-cal-cell');
-        if (cell) {
-          cell.style.position = 'relative';
-          cell.style.overflow = 'visible';
-          cell.appendChild(popup);
-        }
+        document.body.appendChild(popup);
 
         // Click outside → close
         const close = ev2 => {
