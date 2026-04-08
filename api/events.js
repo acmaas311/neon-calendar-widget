@@ -209,9 +209,17 @@ export default async function handler(req, res) {
         // Strip HTML tags and decode all entities Neon may embed in text fields.
         name:    cleanText(e.name || 'Untitled Event'),
         summary: cleanText(e.summary || e.description || ''),
-        // thumbnailUrl is often null from NeonCRM. The first <img> in the raw
-        // description HTML is the reliable source. Use thumbnailUrl as fallback.
-        imageUrl: ((() => { const m = (e.summary || e.description || '').match(/<img[^>]+src=["']([^"']+)["']/i); return m ? m[1] : null; })()) || e.thumbnailUrl || null,
+        // Search both summary and description independently for the first <img>
+        // src — using || short-circuits and misses images in e.description when
+        // e.summary is non-empty but text-only (common on member events).
+        imageUrl: ((() => {
+          const raw = [e.summary, e.description].filter(Boolean);
+          for (const s of raw) {
+            const m = s.match(/<img[^>]+src=["']([^"']+)["']/i);
+            if (m) return m[1];
+          }
+          return null;
+        })()) || e.thumbnailUrl || null,
         isFree,
         isFull,
         // Borough derived from addressCity
