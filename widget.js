@@ -114,18 +114,18 @@
 /* ── Header buttons ─────────────────────────────────────────────────────── */
 #nba-calendar .nba-btn {
   border: none; padding: 7px 14px !important; font-family: 'Montserrat', sans-serif !important;
-  font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: .04em;
+  font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: .04em;
   transition: background .15s; line-height: 1 !important; margin: 0 !important;
 }
 #nba-calendar .nba-btn-today  { background: #1BA249; color: #fff; }
 #nba-calendar .nba-btn-today:hover { background: #57B94C; }
 #nba-calendar .nba-btn-nav    { background: rgba(255,255,255,.18); color: #fff; padding: 7px 12px !important; font-size: 16px; }
 #nba-calendar .nba-btn-nav:hover { background: rgba(255,255,255,.32); }
-#nba-calendar .nba-month-label { font-size: 15px; font-weight: 700; color: #fff; min-width: 170px; text-align: center; margin: 0 !important; padding: 0 !important; }
+#nba-calendar .nba-month-label { font-size: 16px; font-weight: 700; color: #fff; min-width: 170px; text-align: center; margin: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-view-toggle { display: flex; border: 1.5px solid rgba(255,255,255,.4); overflow: hidden; margin-left: 6px !important; }
 #nba-calendar .nba-view-btn {
   background: transparent; color: rgba(255,255,255,.65); border: none;
-  padding: 6px 14px !important; font-family: 'Montserrat', sans-serif !important; font-size: 11px; font-weight: 600;
+  padding: 6px 14px !important; font-family: 'Montserrat', sans-serif !important; font-size: 12px; font-weight: 600;
   cursor: pointer; letter-spacing: .05em; transition: all .15s; margin: 0 !important;
 }
 #nba-calendar .nba-view-btn.active { background: #1BA249; color: #fff; }
@@ -145,7 +145,7 @@
 }
 #nba-calendar .nba-search {
   background: #fff; border: 1.5px solid #c0d8c9; color: #222;
-  font-family: 'Montserrat', sans-serif !important; font-size: 12px;
+  font-family: 'Montserrat', sans-serif !important; font-size: 13px;
   padding: 7px 28px 7px 32px !important; width: 210px; outline: none; transition: border-color .15s;
   -webkit-appearance: none; margin: 0 !important; line-height: 1 !important;
 }
@@ -159,13 +159,13 @@
 #nba-calendar .nba-search-clear.visible { display: block; }
 #nba-calendar .nba-search-clear:hover { color: #333; }
 #nba-calendar .nba-filter-label {
-  font-size: 10px; font-weight: 700; color: #15522B;
+  font-size: 11px; font-weight: 700; color: #15522B;
   text-transform: uppercase; letter-spacing: .07em; white-space: nowrap;
 }
 #nba-calendar .nba-filter-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 #nba-calendar .nba-filter-chip {
   display: inline-flex; align-items: center; background: #fff; border: 1.5px solid #c0d8c9;
-  padding: 5px 13px !important; font-size: 11px; font-weight: 600; color: #15522B; cursor: pointer;
+  padding: 5px 13px !important; font-size: 12px; font-weight: 600; color: #15522B; cursor: pointer;
   transition: all .15s; white-space: nowrap; user-select: none; margin: 0 !important;
   font-family: 'Montserrat', sans-serif !important; line-height: 1 !important;
 }
@@ -177,7 +177,7 @@
 #nba-calendar .nba-cat-btn {
   display: inline-flex; align-items: center; gap: 6px;
   background: #fff; border: 1.5px solid #c0d8c9; color: #15522B;
-  padding: 5px 11px !important; font-size: 11px; font-weight: 600;
+  padding: 5px 11px !important; font-size: 12px; font-weight: 600;
   cursor: pointer; white-space: nowrap; user-select: none; margin: 0 !important;
   font-family: 'Montserrat', sans-serif !important; line-height: 1 !important; transition: all .15s;
 }
@@ -192,7 +192,7 @@
 #nba-calendar .nba-cat-panel.open { display: block; }
 #nba-calendar .nba-cat-option {
   display: flex; align-items: center; gap: 9px;
-  padding: 8px 14px !important; cursor: pointer; font-size: 11px; font-weight: 500;
+  padding: 8px 14px !important; cursor: pointer; font-size: 12px; font-weight: 500;
   color: #333; line-height: 1 !important; margin: 0 !important; user-select: none;
   font-family: 'Montserrat', sans-serif !important;
 }
@@ -200,7 +200,7 @@
 #nba-calendar .nba-cat-option input[type="checkbox"] { margin: 0 !important; cursor: pointer; flex-shrink: 0; accent-color: #15522B; }
 
 /* ── Loading / Error ─────────────────────────────────────────────────────── */
-#nba-calendar .nba-status { padding: 48px 24px; text-align: center; font-size: 13px; color: #777; }
+#nba-calendar .nba-status { padding: 48px 24px; text-align: center; font-size: 14px; color: #777; }
 #nba-calendar .nba-status.error { color: #b00; }
 #nba-calendar .nba-spinner {
   display: inline-block; width: 24px; height: 24px;
@@ -216,7 +216,7 @@
   background: #15522B; min-width: 560px;
 }
 #nba-calendar .nba-cal-dow {
-  padding: 10px 0 !important; text-align: center; font-size: 11px; font-weight: 700;
+  padding: 10px 0 !important; text-align: center; font-size: 12px; font-weight: 700;
   text-transform: uppercase; letter-spacing: .07em; color: rgba(255,255,255,.85); margin: 0 !important; line-height: 1 !important;
 }
 #nba-calendar .nba-cal-body {
@@ -234,7 +234,7 @@
 }
 #nba-calendar .nba-cal-cell.other-month { background: #fafafa; }
 #nba-calendar .nba-day-num {
-  font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 4px !important; margin-top: 0 !important;
+  font-size: 13px; font-weight: 700; color: #15522B; margin-bottom: 4px !important; margin-top: 0 !important;
   display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0 !important; line-height: 1 !important;
 }
 #nba-calendar .nba-cal-cell.other-month .nba-day-num { color: #ccc; }
@@ -251,12 +251,12 @@
 }
 #nba-calendar .nba-event-chip:hover { background: #15522B; }
 #nba-calendar .nba-chip-time  {
-  display: block !important; font-size: 11px !important; font-weight: 700 !important; opacity: .88;
+  display: block !important; font-size: 12px !important; font-weight: 700 !important; opacity: .88;
   letter-spacing: .02em; line-height: 1.2 !important; margin: 0 !important; color: #fff !important; padding: 0 !important;
   white-space: nowrap !important; overflow: hidden !important;
 }
 #nba-calendar .nba-chip-title {
-  display: block !important; font-size: 12px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
+  display: block !important; font-size: 13px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
   overflow: hidden !important; max-height: calc(1.3em * 4) !important; padding: 0 !important; margin: 0 !important;
 }
 /* ── Photo event card ────────────────────────────────────────────────────── */
@@ -264,7 +264,7 @@
 #nba-calendar .nba-photo-wrap:hover { opacity: .88; }
 /* ── "+ N more" button ───────────────────────────────────────────────────── */
 #nba-calendar .nba-more-btn {
-  display: block; font-size: 10px; font-weight: 600; color: #018F99; cursor: pointer;
+  display: block; font-size: 11px; font-weight: 600; color: #018F99; cursor: pointer;
   margin-top: 3px !important; margin-bottom: 0 !important; background: none; border: none; padding: 0 !important;
   font-family: 'Montserrat', sans-serif !important; text-align: left; line-height: 1.3 !important;
 }
@@ -280,7 +280,7 @@
   font-family: 'Montserrat', sans-serif;
 }
 #nba-calendar .nba-day-popup-hdr {
-  font-size: 11px; font-weight: 700; color: #15522B;
+  font-size: 12px; font-weight: 700; color: #15522B;
   text-transform: uppercase; letter-spacing: .07em;
   padding: 2px 4px 6px !important; margin: 0 !important;
   border-bottom: 1.5px solid #e0ede5; line-height: 1 !important;
@@ -309,22 +309,22 @@
 @media (hover: none) { #nba-calendar .nba-tooltip { display: none !important; } }
 /* List-view tooltip drops below the row instead of floating to the side */
 #nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
-#nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-tt-time     { font-size: 11px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
-#nba-calendar .nba-tt-location { font-size: 11px; color: #555; margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-title    { font-size: 13px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
+#nba-calendar .nba-tt-time     { font-size: 12px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-location { font-size: 12px; color: #555; margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-desc     {
-  font-size: 10.5px; color: #444; line-height: 1.4 !important;
+  font-size: 11.5px; color: #444; line-height: 1.4 !important;
   border-top: 1px solid #e8f3ec; padding-top: 4px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 4px !important; margin-bottom: 0 !important;
   overflow: hidden;
 }
-#nba-calendar .nba-tt-tag      { display: inline-block; background: #f0f7f2; color: #15522B; padding: 2px 7px !important; font-size: 9.5px; font-weight: 700; margin-top: 4px !important; margin-right: 3px !important; margin-bottom: 0 !important; margin-left: 0 !important; line-height: 1 !important; }
+#nba-calendar .nba-tt-tag      { display: inline-block; background: #f0f7f2; color: #15522B; padding: 2px 7px !important; font-size: 10.5px; font-weight: 700; margin-top: 4px !important; margin-right: 3px !important; margin-bottom: 0 !important; margin-left: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tt-tag.paid { background: #fff3e0; color: #c0540a; }
 
 /* ── List view ───────────────────────────────────────────────────────────── */
 #nba-calendar .nba-list       { padding: 26px 24px !important; margin: 0 !important; }
 #nba-calendar .nba-list-group { margin-bottom: 39px !important; margin-top: 0 !important; padding: 0 !important; }
 #nba-calendar .nba-list-date-hdr {
-  font-size: 11px; font-weight: 700; color: #15522B;
+  font-size: 12px; font-weight: 700; color: #15522B;
   text-transform: uppercase; letter-spacing: .08em; line-height: 1.2 !important;
   padding: 7px 0 !important; border-bottom: 2px solid #1BA249; margin-bottom: 10px !important; margin-top: 0 !important;
 }
@@ -341,12 +341,12 @@
   #nba-calendar:not(#nba-x) .nba-list-name { font-size: 13px !important; }
 }
 #nba-calendar .nba-list-body { flex: 1; min-width: 0; margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 14px !important; align-content: start !important; }
-#nba-calendar .nba-list-name { font-size: 14px !important; font-weight: 700 !important; color: #15522B !important; margin: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-list-time { font-size: 12px !important; font-weight: 600 !important; color: #018F99 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
+#nba-calendar .nba-list-name { font-size: 15px !important; font-weight: 700 !important; color: #15522B !important; margin: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
+#nba-calendar .nba-list-time { font-size: 13px !important; font-weight: 600 !important; color: #018F99 !important; margin: 0 !important; line-height: 1.2 !important; padding: 0 !important; }
 #nba-calendar .nba-list-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-#nba-calendar .nba-tag       { display: inline-block; padding: 2px 8px !important; font-size: 9.5px; font-weight: 700; margin: 0 !important; line-height: 1 !important; }
+#nba-calendar .nba-tag       { display: inline-block; padding: 2px 8px !important; font-size: 10.5px; font-weight: 700; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar .nba-tag-cat   { background: #f0f7f2; color: #15522B; }
-#nba-calendar .nba-list-empty { padding: 40px 0 !important; text-align: center; font-size: 13px; color: #999; margin: 0 !important; }
+#nba-calendar .nba-list-empty { padding: 40px 0 !important; text-align: center; font-size: 14px; color: #999; margin: 0 !important; }
 
 /* ── List-view bottom nav ─────────────────────────────────────────────── */
 #nba-calendar .nba-list-nav {
@@ -354,12 +354,12 @@
   border-top: 1px solid #d4e8da; padding: 10px 0 0 !important; margin-top: 8px !important;
 }
 #nba-calendar .nba-list-nav-label {
-  font-size: 13px; font-weight: 700; color: #15522B; margin: 0 !important; padding: 0 !important; line-height: 1 !important;
+  font-size: 14px; font-weight: 700; color: #15522B; margin: 0 !important; padding: 0 !important; line-height: 1 !important;
 }
 #nba-calendar .nba-list-nav-btn {
   background: #15522B; color: #fff; border: none;
   padding: 7px 16px !important; font-family: 'Montserrat', sans-serif !important;
-  font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: .04em;
+  font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: .04em;
   transition: background .15s; line-height: 1 !important; margin: 0 !important;
   display: flex; align-items: center; gap: 6px;
 }
@@ -387,8 +387,8 @@
 #nba-calendar:not(#nba-x) .nba-cal-dow { display: block !important; padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 2px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
-#nba-calendar:not(#nba-x) .nba-chip-time { font-size: 11px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 12px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
+#nba-calendar:not(#nba-x) .nba-chip-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 13px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { position: relative !important; }
 #nba-calendar:not(#nba-x) .nba-list { display: block !important; padding: 26px 24px !important; margin: 0 !important; }
@@ -396,8 +396,8 @@
 #nba-calendar:not(#nba-x) .nba-list-date-hdr { display: block !important; padding: 5px 0 !important; margin-bottom: 6px !important; margin-top: 0 !important; line-height: 1.2 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { display: flex !important; padding: 16px !important; margin: 0 0 9px 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-body { margin: 0 !important; padding: 0 !important; display: grid !important; row-gap: 14px !important; align-content: start !important; }
-#nba-calendar:not(#nba-x) .nba-list-name { font-size: 14px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
-#nba-calendar:not(#nba-x) .nba-list-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-name { font-size: 15px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+#nba-calendar:not(#nba-x) .nba-list-time { font-size: 13px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; }
 #nba-calendar:not(#nba-x) .nba-tag { padding: 2px 8px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-list-tags { margin: 0 !important; padding: 0 !important; }
     `;
@@ -513,11 +513,11 @@
       ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
     const desc = shortDesc
-      ? '<div style="font-size:10.5px!important;color:#444!important;line-height:1.45!important;border-top:1px solid #e8f3ec!important;padding:4px 0 0!important;margin:5px 0 0!important;overflow:hidden!important">' + h(shortDesc) + '</div>'
+      ? '<div style="font-size:11.5px!important;color:#444!important;line-height:1.45!important;border-top:1px solid #e8f3ec!important;padding:4px 0 0!important;margin:5px 0 0!important;overflow:hidden!important">' + h(shortDesc) + '</div>'
       : '';
     const catLabel = CATEGORY_DISPLAY[e.category] || e.category;
     const cat = e.category
-      ? '<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:9.5px!important;font-weight:700!important;line-height:1.2!important">' + h(catLabel) + '</span></div>'
+      ? '<div style="margin:5px 0 0!important;padding:0!important"><span style="display:inline-block!important;background:#f0f7f2!important;color:#15522B!important;padding:2px 7px!important;font-size:10.5px!important;font-weight:700!important;line-height:1.2!important">' + h(catLabel) + '</span></div>'
       : '';
 
     // Full-bleed image at the top — negative margins cancel the 8px padding so
@@ -534,8 +534,8 @@
     // line-height, producing ~38px invisible gaps between each element.
     return '<div class="nba-tooltip' + (flip ? ' flip' : '') + '" style="padding:8px!important">'
       + img
-      + '<div style="font-size:12px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
-      + '<div style="font-size:11px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
+      + '<div style="font-size:13px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
+      + '<div style="font-size:12px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
       + desc
       + cat
       + '</div>';
@@ -588,8 +588,8 @@
 
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:2px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
-            <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:11px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
-            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:12px!important;max-height:calc(1.3em * 4)!important;overflow:hidden!important">${h(e.name)}</span>
+            <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:12px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
+            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:13px!important;max-height:calc(1.3em * 4)!important;overflow:hidden!important">${h(e.name)}</span>
             ${ttHTML(e, flip)}
           </a>`;
       }).join('');
@@ -825,12 +825,12 @@
     q('#nba-calendar .nba-chip-time').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.2'); f(el, 'min-height', '0');
-      f(el, 'font-size', '11px'); f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
+      f(el, 'font-size', '12px'); f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
     });
     q('#nba-calendar .nba-chip-title').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
-      f(el, 'font-size', '12px'); f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
+      f(el, 'font-size', '13px'); f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
     });
   }
 
@@ -1023,8 +1023,8 @@
         const chipsHTML = evts.map(ev => {
           const timeStr = ev.startTime ? fmtRange(ev.startTime, ev.endTime) : 'All Day';
           return '<a href="' + h(ev.url) + '" target="_blank" rel="noopener" class="nba-day-popup-chip" style="text-decoration:none!important">'
-            + '<span style="display:block!important;font-size:10px!important;font-weight:700!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;text-decoration:none!important">' + h(timeStr) + '</span>'
-            + '<span style="display:block!important;font-size:13px!important;font-weight:700!important;color:#15522B!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;text-decoration:none!important">' + h(ev.name) + '</span>'
+            + '<span style="display:block!important;font-size:11px!important;font-weight:700!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;text-decoration:none!important">' + h(timeStr) + '</span>'
+            + '<span style="display:block!important;font-size:14px!important;font-weight:700!important;color:#15522B!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;text-decoration:none!important">' + h(ev.name) + '</span>'
             + '</a>';
         }).join('');
 
