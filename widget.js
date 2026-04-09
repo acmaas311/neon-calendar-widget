@@ -313,7 +313,7 @@
 #nba-calendar .nba-tt-time     { font-size: 12px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-location { font-size: 12px; color: #555; margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-desc     {
-  font-size: 11.5px; color: #444; line-height: 1.4 !important;
+  font-size: 13.5px; color: #444; line-height: 1.4 !important;
   border-top: 1px solid #e8f3ec; padding-top: 4px !important; padding-bottom: 0 !important; padding-left: 0 !important; padding-right: 0 !important; margin-top: 4px !important; margin-bottom: 0 !important;
   overflow: hidden;
 }
@@ -513,7 +513,7 @@
       ? (e.summary.length > 450 ? e.summary.substring(0, 450) + '…' : e.summary)
       : '';
     const desc = shortDesc
-      ? '<div style="font-size:11.5px!important;color:#444!important;line-height:1.45!important;border-top:1px solid #e8f3ec!important;padding:4px 0 0!important;margin:5px 0 0!important;overflow:hidden!important">' + h(shortDesc) + '</div>'
+      ? '<div style="font-size:13.5px!important;color:#444!important;line-height:1.45!important;border-top:1px solid #e8f3ec!important;padding:4px 0 0!important;margin:5px 0 0!important;overflow:hidden!important">' + h(shortDesc) + '</div>'
       : '';
     const catLabel = CATEGORY_DISPLAY[e.category] || e.category;
     const cat = e.category
