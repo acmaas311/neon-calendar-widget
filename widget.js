@@ -109,7 +109,7 @@
   display: flex !important; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   margin: 0 !important;
 }
-#nba-calendar .nba-header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+#nba-calendar .nba-header-right { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
 
 /* ── Header buttons ─────────────────────────────────────────────────────── */
 #nba-calendar .nba-btn {
@@ -264,7 +264,7 @@
 #nba-calendar .nba-photo-wrap:hover { opacity: .88; }
 /* ── "+ N more" button ───────────────────────────────────────────────────── */
 #nba-calendar .nba-more-btn {
-  display: block; font-size: 13px; font-weight: 600; color: #018F99; cursor: pointer;
+  display: block; font-size: 13px !important; font-weight: 600; color: #018F99; cursor: pointer;
   margin-top: 3px !important; margin-bottom: 0 !important; background: none; border: none; padding: 0 !important;
   font-family: 'Montserrat', sans-serif !important; text-align: left; line-height: 1.3 !important;
 }
