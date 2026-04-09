@@ -306,6 +306,7 @@
 #nba-calendar .nba-event-chip:hover  .nba-tooltip,
 #nba-calendar .nba-photo-wrap:hover  .nba-tooltip,
 #nba-calendar .nba-list-event:hover  .nba-tooltip { display: block; }
+@media (hover: none) { #nba-calendar .nba-tooltip { display: none !important; } }
 /* List-view tooltip drops below the row instead of floating to the side */
 #nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
 #nba-calendar .nba-tt-title    { font-size: 12px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
