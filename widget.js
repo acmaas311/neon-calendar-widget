@@ -119,9 +119,9 @@
 }
 #nba-calendar .nba-btn-today  { background: #1BA249; color: #fff; }
 #nba-calendar .nba-btn-today:hover { background: #57B94C; }
-#nba-calendar .nba-btn-nav    { background: rgba(255,255,255,.18); color: #fff; padding: 7px 4px !important; font-size: 16px; }
+#nba-calendar .nba-btn-nav    { background: rgba(255,255,255,.18); color: #fff; padding: 7px 12px !important; font-size: 16px; }
 #nba-calendar .nba-btn-nav:hover { background: rgba(255,255,255,.32); }
-#nba-calendar .nba-month-label { font-size: 16px; font-weight: 700; color: #fff; min-width: 170px; text-align: center; margin: 0 !important; padding: 0 !important; }
+#nba-calendar .nba-month-label { font-size: 16px; font-weight: 700; color: #fff; min-width: 170px; text-align: center; margin: 0 -6px !important; padding: 0 !important; }
 #nba-calendar .nba-view-toggle { display: flex; border: 1.5px solid rgba(255,255,255,.4); overflow: hidden; margin-left: 6px !important; }
 #nba-calendar .nba-view-btn {
   background: transparent; color: rgba(255,255,255,.65); border: none;
@@ -375,8 +375,8 @@
 #nba-calendar:not(#nba-x) .nba-header { padding: 8px 16px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-header-right { margin: 0 !important; padding: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-btn { padding: 7px 14px !important; margin: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-btn-nav { padding: 7px 4px !important; }
-#nba-calendar:not(#nba-x) .nba-month-label { margin: 0 !important; padding: 0 !important; line-height: 1 !important; }
+#nba-calendar:not(#nba-x) .nba-btn-nav { padding: 7px 12px !important; }
+#nba-calendar:not(#nba-x) .nba-month-label { margin: 0 -6px !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-view-toggle { margin-left: 6px !important; }
 #nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-filters { padding: 7px 16px !important; margin: 0 !important; }
