@@ -247,7 +247,7 @@
   display: flex !important; flex-direction: column !important; gap: 4px !important;
   position: relative !important; height: auto !important;
   background: #1BA249; color: #fff !important;
-  cursor: pointer; padding: 5px 7px 6px !important; transition: background .15s; text-decoration: none !important; margin: 0 !important;
+  cursor: pointer; padding: 7px 9px 8px !important; transition: background .15s; text-decoration: none !important; margin: 0 !important;
 }
 #nba-calendar .nba-event-chip:hover { background: #15522B; }
 #nba-calendar .nba-chip-time  {
@@ -310,7 +310,7 @@
 /* List-view tooltip drops below the row instead of floating to the side */
 #nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
 #nba-calendar .nba-tt-title    { font-size: 14px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-tt-time     { font-size: 14px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-time     { font-size: 13.5px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-location { font-size: 12px; color: #555; margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-desc     {
   font-size: 13.5px; color: #444; line-height: 1.4 !important;
@@ -386,7 +386,7 @@
 #nba-calendar:not(#nba-x) .nba-cal-head { display: grid !important; }
 #nba-calendar:not(#nba-x) .nba-cal-dow { display: block !important; padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 4px !important; padding: 5px 7px 6px !important; margin: 0 !important; position: relative !important; height: auto !important; }
+#nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 4px !important; padding: 7px 9px 8px !important; margin: 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
 #nba-calendar:not(#nba-x) .nba-chip-title { font-size: 13px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin: 0 !important; }
@@ -535,7 +535,7 @@
     return '<div class="nba-tooltip' + (flip ? ' flip' : '') + '" style="padding:8px!important">'
       + img
       + '<div style="font-size:14px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
-      + '<div style="font-size:14px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
+      + '<div style="font-size:13.5px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
       + desc
       + cat
       + '</div>';
@@ -587,7 +587,7 @@
         const timeStr = e.startTime ? fmtRange(e.startTime, e.endTime) : 'All Day';
 
         return `
-          <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:4px!important;padding:5px 7px 6px!important;margin:0!important;position:relative!important;height:auto!important">
+          <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:4px!important;padding:7px 9px 8px!important;margin:0!important;position:relative!important;height:auto!important">
             <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:12px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
             <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:13px!important;max-height:calc(1.3em * 4)!important;overflow:hidden!important">${h(e.name)}</span>
             ${ttHTML(e, flip)}
@@ -816,7 +816,7 @@
       f(el, 'display', 'flex');
       f(el, 'flex-direction', 'column');
       f(el, 'gap', '4px');
-      f(el, 'padding', '5px 7px 6px');
+      f(el, 'padding', '7px 9px 8px');
       f(el, 'margin', '0');
       f(el, 'height', 'auto');
       f(el, 'min-height', '0');
