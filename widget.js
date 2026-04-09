@@ -310,7 +310,7 @@
 /* List-view tooltip drops below the row instead of floating to the side */
 #nba-calendar .nba-list-event .nba-tooltip { top: 100% !important; left: 0 !important; right: auto !important; width: 280px; }
 #nba-calendar .nba-tt-title    { font-size: 14px; font-weight: 700; color: #15522B; margin-bottom: 2px !important; margin-top: 0 !important; line-height: 1.3 !important; padding: 0 !important; }
-#nba-calendar .nba-tt-time     { font-size: 12px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
+#nba-calendar .nba-tt-time     { font-size: 14px; font-weight: 600; color: #018F99; margin-bottom: 0 !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-location { font-size: 12px; color: #555; margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1.2 !important; }
 #nba-calendar .nba-tt-desc     {
   font-size: 13.5px; color: #444; line-height: 1.4 !important;
@@ -535,7 +535,7 @@
     return '<div class="nba-tooltip' + (flip ? ' flip' : '') + '" style="padding:8px!important">'
       + img
       + '<div style="font-size:14px!important;font-weight:700!important;color:#15522B!important;line-height:1.35!important;margin:0 0 3px 0!important;padding:0!important">' + h(e.name) + '</div>'
-      + '<div style="font-size:12px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
+      + '<div style="font-size:14px!important;font-weight:600!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important">' + h(timeStr) + '</div>'
       + desc
       + cat
       + '</div>';
