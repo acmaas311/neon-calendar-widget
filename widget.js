@@ -1023,8 +1023,8 @@
         const chipsHTML = evts.map(ev => {
           const timeStr = ev.startTime ? fmtRange(ev.startTime, ev.endTime) : 'All Day';
           return '<a href="' + h(ev.url) + '" target="_blank" rel="noopener" class="nba-day-popup-chip" style="text-decoration:none!important">'
-            + '<span style="display:block!important;font-size:11px!important;font-weight:700!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;text-decoration:none!important">' + h(timeStr) + '</span>'
-            + '<span style="display:block!important;font-size:14px!important;font-weight:700!important;color:#15522B!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;text-decoration:none!important">' + h(ev.name) + '</span>'
+            + '<span style="display:block!important;font-size:12px!important;font-weight:700!important;color:#018F99!important;line-height:1.2!important;margin:0!important;padding:0!important;white-space:nowrap!important;overflow:hidden!important;text-decoration:none!important">' + h(timeStr) + '</span>'
+            + '<span style="display:block!important;font-size:13px!important;font-weight:700!important;color:#15522B!important;line-height:1.3!important;margin:0!important;padding:0!important;overflow:hidden!important;text-decoration:none!important">' + h(ev.name) + '</span>'
             + '</a>';
         }).join('');
 
