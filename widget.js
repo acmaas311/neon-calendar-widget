@@ -793,6 +793,7 @@
     const f = (el, prop, val) => el.style.setProperty(prop, val, 'important');
     // Kill any host-injected margins between widget sections
     const cal = document.getElementById('nba-calendar');
+    const compact = cal?.classList.contains('nba-compact');
     if (cal) {
       f(cal, 'display', 'flex'); f(cal, 'flex-direction', 'column'); f(cal, 'gap', '0');
       f(cal, 'overflow', 'visible');
@@ -821,8 +822,8 @@
     q('#nba-calendar .nba-event-chip').forEach(el => {
       f(el, 'display', 'flex');
       f(el, 'flex-direction', 'column');
-      f(el, 'gap', '4px');
-      f(el, 'padding', '7px 9px 8px');
+      f(el, 'gap',     compact ? '3px' : '4px');
+      f(el, 'padding', compact ? '5px 7px 6px' : '7px 9px 8px');
       f(el, 'margin', '0 3px 0 0');
       f(el, 'height', 'auto');
       f(el, 'min-height', '0');
@@ -831,12 +832,12 @@
     q('#nba-calendar .nba-chip-time').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.2'); f(el, 'min-height', '0');
-      f(el, 'font-size', '12px'); f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
+      f(el, 'font-size', compact ? '10px' : '12px'); f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
     });
     q('#nba-calendar .nba-chip-title').forEach(el => {
       f(el, 'display', 'block'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
-      f(el, 'font-size', '13px'); f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
+      f(el, 'font-size', compact ? '11px' : '13px'); f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
     });
   }
 
@@ -1239,9 +1240,20 @@
     const el = document.getElementById('nba-calendar');
     if (!el) return;
     const w = el.offsetWidth;
-    const narrow  = w > 0 && w < NARROW_PX;
-    const compact = w > 0 && w >= NARROW_PX && w < COMPACT_PX;
+    const narrow    = w > 0 && w < NARROW_PX;
+    const compact   = w > 0 && w >= NARROW_PX && w < COMPACT_PX;
+    const wasCompact = el.classList.contains('nba-compact');
     el.classList.toggle('nba-compact', compact);
+    // If compact state changed, re-apply inline sizes on existing chips immediately
+    if (compact !== wasCompact) {
+      const sp = (e, p, v) => e.style.setProperty(p, v, 'important');
+      el.querySelectorAll('.nba-event-chip').forEach(e => {
+        sp(e, 'padding', compact ? '5px 7px 6px' : '7px 9px 8px');
+        sp(e, 'gap',     compact ? '3px' : '4px');
+      });
+      el.querySelectorAll('.nba-chip-time').forEach(e  => sp(e, 'font-size', compact ? '10px' : '12px'));
+      el.querySelectorAll('.nba-chip-title').forEach(e => sp(e, 'font-size', compact ? '11px' : '13px'));
+    }
     if (narrow && state.view === 'month') {
       state.view = 'list';
       state._autoList = true;
