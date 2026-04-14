@@ -227,7 +227,7 @@
 /* ── Individual cell ─────────────────────────────────────────────────────── */
 #nba-calendar .nba-cal-cell {
   border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0;
-  min-height: 100px; padding: 7px !important; background: #fff; overflow: visible;
+  min-height: 100px; padding: 7px !important; background: #fff; overflow: hidden;
   display: grid !important; grid-template-columns: 1fr !important;
   align-content: start !important; row-gap: 3px !important;
   vertical-align: top; margin: 0 !important;
@@ -381,7 +381,7 @@
 #nba-calendar:not(#nba-x) .nba-view-btn { padding: 6px 14px !important; margin: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-filters { padding: 7px 16px !important; margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-filter-chip { padding: 5px 13px !important; margin: 0 !important; line-height: 1 !important; }
-#nba-calendar:not(#nba-x) .nba-cal-cell { display: grid !important; grid-template-columns: 1fr !important; align-content: start !important; row-gap: 3px !important; padding: 7px !important; margin: 0 !important; min-height: 100px !important; }
+#nba-calendar:not(#nba-x) .nba-cal-cell { display: grid !important; grid-template-columns: 1fr !important; align-content: start !important; row-gap: 3px !important; padding: 7px !important; margin: 0 !important; min-height: 100px !important; overflow: hidden !important; }
 #nba-calendar:not(#nba-x) .nba-cal-body { display: grid !important; }
 #nba-calendar:not(#nba-x) .nba-cal-head { display: grid !important; }
 #nba-calendar:not(#nba-x) .nba-cal-dow { display: block !important; padding: 10px 0 !important; margin: 0 !important; line-height: 1 !important; }
@@ -996,6 +996,41 @@
       if (++state.month > 11) { state.month = 0; state.year++; }
       loadMonth();
     });
+
+    // Month-view chip tooltips — cells have overflow:hidden so we create a
+    // fixed-position tooltip on <body> instead of relying on CSS :hover.
+    (function() {
+      let floater = null;
+      function removeFloater() { if (floater) { floater.remove(); floater = null; } }
+      window.addEventListener('scroll', removeFloater, { passive: true });
+      el.querySelectorAll('.nba-cal-cell .nba-event-chip').forEach(chip => {
+        const tt = chip.querySelector('.nba-tooltip');
+        if (!tt) return;
+        chip.addEventListener('mouseenter', () => {
+          removeFloater();
+          const r = chip.getBoundingClientRect();
+          const flip = (r.right + 246) > window.innerWidth;
+          floater = document.createElement('div');
+          floater.innerHTML = tt.innerHTML;
+          floater.style.cssText = [
+            'position:fixed!important',
+            'z-index:999999!important',
+            'background:#fff!important',
+            'border:1.5px solid #d4e8da!important',
+            'box-shadow:0 4px 20px rgba(0,0,0,.18)!important',
+            'padding:8px!important',
+            'width:230px!important',
+            'pointer-events:none!important',
+            'overflow:hidden!important',
+            'top:' + r.top + 'px!important',
+            flip ? 'left:auto!important;right:' + (window.innerWidth - r.left + 8) + 'px!important'
+                 : 'left:' + (r.right + 8) + 'px!important;right:auto!important',
+          ].join(';');
+          document.body.appendChild(floater);
+        });
+        chip.addEventListener('mouseleave', removeFloater);
+      });
+    })();
 
     // "+ N more" → show day overflow popup above the button.
     // The popup is appended to <body> and uses position:fixed so it escapes
