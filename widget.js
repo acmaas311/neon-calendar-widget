@@ -259,6 +259,12 @@
   display: block !important; font-size: 13px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
   overflow: hidden !important; max-height: calc(1.3em * 4) !important; padding: 0 !important; margin: 0 !important;
 }
+/* ── Compact chip styles when calendar is 560–750px wide ────────────────── */
+#nba-calendar.nba-compact .nba-event-chip { padding: 5px 7px 6px !important; gap: 3px !important; }
+#nba-calendar.nba-compact .nba-chip-time  { font-size: 10px !important; }
+#nba-calendar.nba-compact .nba-chip-title { font-size: 11px !important; }
+#nba-calendar.nba-compact .nba-more-btn   { font-size: 11px !important; }
+
 /* ── Photo event card ────────────────────────────────────────────────────── */
 #nba-calendar .nba-photo-wrap { position: relative; margin: 0 !important; cursor: pointer; overflow: visible !important; transition: opacity .15s; }
 #nba-calendar .nba-photo-wrap:hover { opacity: .88; }
@@ -1228,10 +1234,14 @@
 
   // ── Responsive: auto-switch to list view when widget is too narrow ───────────
   const NARROW_PX = 560;
+  const COMPACT_PX = 750;
   function checkResponsive() {
     const el = document.getElementById('nba-calendar');
     if (!el) return;
-    const narrow = el.offsetWidth > 0 && el.offsetWidth < NARROW_PX;
+    const w = el.offsetWidth;
+    const narrow  = w > 0 && w < NARROW_PX;
+    const compact = w > 0 && w >= NARROW_PX && w < COMPACT_PX;
+    el.classList.toggle('nba-compact', compact);
     if (narrow && state.view === 'month') {
       state.view = 'list';
       state._autoList = true;
