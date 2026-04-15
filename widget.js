@@ -256,8 +256,9 @@
   white-space: nowrap !important; overflow: hidden !important;
 }
 #nba-calendar .nba-chip-title {
-  display: block !important; font-size: 13px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
-  overflow: hidden !important; max-height: calc(1.3em * 4) !important; padding: 0 !important; margin: 0 !important;
+  display: -webkit-box !important; -webkit-line-clamp: 4 !important; -webkit-box-orient: vertical !important;
+  font-size: 13px !important; font-weight: 600 !important; line-height: 1.3 !important; color: #fff !important;
+  overflow: hidden !important; max-height: none !important; padding: 0 !important; margin: 0 !important;
 }
 /* ── Compact chip styles when calendar is 560–750px wide ────────────────── */
 #nba-calendar.nba-compact .nba-event-chip { padding: 5px 7px 6px !important; gap: 3px !important; }
@@ -394,7 +395,7 @@
 #nba-calendar:not(#nba-x) .nba-day-num { margin-bottom: 4px !important; margin-top: 0 !important; padding: 0 !important; line-height: 1 !important; }
 #nba-calendar:not(#nba-x) .nba-event-chip { display: flex !important; flex-direction: column !important; gap: 4px !important; padding: 7px 9px 8px !important; margin: 0 3px 0 0 !important; position: relative !important; height: auto !important; }
 #nba-calendar:not(#nba-x) .nba-chip-time { font-size: 12px !important; line-height: 1.2 !important; margin: 0 !important; padding: 0 !important; display: block !important; white-space: nowrap !important; overflow: hidden !important; }
-#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 13px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: block !important; overflow: hidden !important; max-height: calc(1.3em * 4) !important; }
+#nba-calendar:not(#nba-x) .nba-chip-title { font-size: 13px !important; line-height: 1.3 !important; margin: 0 !important; padding: 0 !important; display: -webkit-box !important; -webkit-line-clamp: 4 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; max-height: none !important; }
 #nba-calendar:not(#nba-x) .nba-photo-wrap { margin: 0 !important; }
 #nba-calendar:not(#nba-x) .nba-list-event { position: relative !important; }
 #nba-calendar:not(#nba-x) .nba-list { display: block !important; padding: 26px 24px !important; margin: 0 !important; }
@@ -595,7 +596,7 @@
         return `
           <a href="${h(e.url)}" target="_blank" rel="noopener" class="nba-event-chip" style="display:flex!important;flex-direction:column!important;gap:4px!important;padding:7px 9px 8px!important;margin:0 3px 0 0!important;position:relative!important;height:auto!important">
             <span class="nba-chip-time" style="display:block!important;margin:0!important;padding:0!important;line-height:1.2!important;font-size:12px!important;white-space:nowrap!important;overflow:hidden!important">${h(timeStr)}</span>
-            <span class="nba-chip-title" style="display:block!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:13px!important;max-height:calc(1.3em * 4)!important;overflow:hidden!important">${h(e.name)}</span>
+            <span class="nba-chip-title" style="display:-webkit-box!important;-webkit-line-clamp:4!important;-webkit-box-orient:vertical!important;margin:0!important;padding:0!important;line-height:1.3!important;font-size:13px!important;max-height:none!important;overflow:hidden!important">${h(e.name)}</span>
             ${ttHTML(e, flip)}
           </a>`;
       }).join('');
@@ -835,9 +836,11 @@
       f(el, 'font-size', compact ? '10px' : '12px'); f(el, 'white-space', 'nowrap'); f(el, 'overflow', 'hidden');
     });
     q('#nba-calendar .nba-chip-title').forEach(el => {
-      f(el, 'display', 'block'); f(el, 'margin', '0');
+      f(el, 'display', '-webkit-box'); f(el, 'margin', '0');
       f(el, 'padding', '0'); f(el, 'line-height', '1.3'); f(el, 'min-height', '0');
-      f(el, 'font-size', compact ? '11px' : '13px'); f(el, 'overflow', 'hidden'); f(el, 'max-height', 'calc(1.3em * 4)');
+      f(el, 'font-size', compact ? '11px' : '13px'); f(el, 'overflow', 'hidden'); f(el, 'max-height', 'none');
+      el.style.setProperty('-webkit-line-clamp', '4', 'important');
+      el.style.setProperty('-webkit-box-orient', 'vertical', 'important');
     });
   }
 
