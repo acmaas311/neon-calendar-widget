@@ -744,7 +744,7 @@
     if (loading) {
       body = `<div class="nba-status"><div class="nba-spinner"></div><br>Loading events&hellip;</div>`;
     } else if (error) {
-      body = `<div class="nba-status error">&#9888; Could not load events: ${h(error)}</div>`;
+      body = `<div class="nba-status error">&#9888; Could not load events. <button id="nba-retry-btn" style="margin-left:8px;padding:4px 12px;font-size:13px;cursor:pointer;background:#15522B;color:#fff;border:none;border-radius:4px;font-family:inherit">Try again</button></div>`;
     } else {
       body = view === 'month' ? buildMonth() : buildList();
     }
@@ -909,6 +909,12 @@
     if (!el) return;
 
     // Today
+    // Retry button (shown in error state)
+    el.querySelector('#nba-retry-btn')?.addEventListener('click', () => {
+      delete state._cache[`${state.year}-${String(state.month+1).padStart(2,'0')}`];
+      loadMonth();
+    });
+
     el.querySelector('#nba-today-btn')?.addEventListener('click', () => {
       const t = new Date();
       if (state.year !== t.getFullYear() || state.month !== t.getMonth()) {
@@ -1075,13 +1081,39 @@
 
   // ── Data loading ─────────────────────────────────────────────────────────────
 
+  // Single fetch with a 15-second timeout. Throws on timeout, network error,
+  // or non-2xx HTTP status.
+  async function fetchWithTimeout(url) {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), 15000);
+    try {
+      const res = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(tid);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      clearTimeout(tid);
+      throw err;
+    }
+  }
+
   // Fetch all pages for a given date range in parallel and return the full
-  // event array. Throws on network/HTTP errors for the first page; subsequent
-  // page failures are swallowed so a partial result is still returned.
+  // event array. Retries up to 2 times (3 total attempts) with 1.5s backoff
+  // before propagating the error; subsequent-page failures are swallowed.
   async function fetchAllPages(startDate, endDate) {
-    const res = await fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=200`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const url = `${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=200`;
+    let data;
+    let lastErr;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        data = await fetchWithTimeout(url);
+        break; // success
+      } catch (err) {
+        lastErr = err;
+        if (attempt < 2) await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+      }
+    }
+    if (!data) throw lastErr;
 
     let events = data.events || [];
     const total    = data.pagination?.totalResults ?? events.length;
@@ -1093,8 +1125,8 @@
       const pageNums = Array.from({ length: maxPages - 1 }, (_, i) => i + 2);
       const pages = await Promise.all(
         pageNums.map(pg =>
-          fetch(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${pg}`)
-            .then(r => r.ok ? r.json() : null)
+          fetchWithTimeout(`${BASE_URL}/api/events?startDate=${startDate}&endDate=${endDate}&pageSize=${size}&page=${pg}`)
+            .then(pd => pd)
             .catch(() => null)
         )
       );
